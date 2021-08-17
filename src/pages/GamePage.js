@@ -1,28 +1,29 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Board from '../components/Board'
-import Square from '../components/Square'
+
+import uniqid from 'uniqid'
+import './GamePage.css';
 
 const GamePage = () => {
-    let [board, setBoard] = useState([])
+    let [playerBoard, setPlayerBoard] = useState([])
     let [PcBoard, setPcBoard] = useState([])
+    let [turn, setTurn] = useState("YOUR")
+    let cols = 10;
+    let rows = 10;
+
 
     useEffect(() => {
-        setBoard(new Array(10).fill(0).map(() => new Array(10).fill(0))); //setting 2d array 10x10
-        setPcBoard(new Array(10).fill(0).map(() => new Array(10).fill(0)));//setting 2d array 10x10
+        setPlayerBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0))); //setting 2d array 10x10
+        setPcBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0)));//setting 2d array 10x10
 
     }, [])
-    console.log('board', board)
+
     /////Player board/////
     const [rowInput, setRowInput] = useState()
     const [columnInput, setColumnInput] = useState()
-    const [rowShootInput, setRowShootInput] = useState()
-    const [columnShootInput, setColumnShootInput] = useState()
-
 
     /////PC's board/////
-
-
     const shipLength = 1
     let rowEnemy = 0
     let colEnemy = 0
@@ -39,38 +40,44 @@ const GamePage = () => {
     };
     //Player: place coordinates on player board
     let placeShips = (e) => {
-        board[rowInput - 1][columnInput - 1] = 1
-        console.log(board)
+        playerBoard[rowInput - 1][columnInput - 1] = 1
+        console.log("PlayerBoard", playerBoard)
         placeShipsRandomly() //on PC's board
     };
 
     //Player: shoots to coordinates on PC's board
 
-    let handleRowShootInput = (e) => {
-        setRowShootInput(parseInt(e.target.value))
-    };
-
-    let handleColumnShootInput = (e) => {
-        setColumnShootInput(parseInt(e.target.value))
-    };
-
-    let shootPc = (e) => {
-        if (PcBoard[rowShootInput - 1][columnShootInput - 1] === 1) {
-            PcBoard[rowShootInput - 1][columnShootInput - 1] = 'x'
+    let recieveShootPc = (rowIndex, colIndex, e) => {
+        if (PcBoard[rowIndex][colIndex] === 1) {
+            PcBoard[rowIndex][colIndex] = 'x'
             console.log("hit")
-            console.log(rowInput - 1)
-            console.log(columnInput - 1)
+            console.log('row', rowIndex)
+            console.log('col', colIndex)
             console.log(PcBoard)
         } else {
-            PcBoard[rowShootInput - 1][columnShootInput - 1] = 'o'
+            PcBoard[rowIndex][colIndex] = 'o'
             console.log("miss")
-            console.log(rowInput)
-            console.log(columnInput)
-            console.log(PcBoard[rowInput - 1][columnInput - 1])
+            console.log('row', rowIndex)
+            console.log('col', colIndex)
             console.log(PcBoard)
         }
     };
-
+    //PC: shoots random to player's board
+    let recieveShootPlayer = (rowIndex, colIndex, e) => {
+        if (playerBoard[rowIndex][colIndex] === 1) {
+            playerBoard[rowIndex][colIndex] = 'x'
+            console.log("hit")
+            console.log('row', rowIndex)
+            console.log('col', colIndex)
+            console.log(playerBoard)
+        } else {
+            playerBoard[rowIndex][colIndex] = 'o'
+            console.log("miss")
+            console.log('row', rowIndex)
+            console.log('col', colIndex)
+            console.log(playerBoard)
+        }
+    };
     //PC: Random coordinates for PC's board
     const getRandomCoordinates = () => {
         rowEnemy = Math.floor(Math.random() * (10 - shipLength + 1));
@@ -81,10 +88,7 @@ const GamePage = () => {
     const placeShipsRandomly = async () => {
         await getRandomCoordinates()
         PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-        console.log(PcBoard)
-    };
-
-    let shootPlayer = () => {
+        console.log("PcBoard", PcBoard)
     };
 
 
@@ -95,13 +99,41 @@ const GamePage = () => {
             <input type="text" name="row" placeholder="row" value={rowInput} onChange={handleRowInput} />
             <input type="text" name="column" placeholder="column" value={columnInput} onChange={handleColumnInput} />
             <button onClick={placeShips}>PLACE SHIP</button>
-            <input type="text" name="row" placeholder="row" value={rowShootInput} onChange={handleRowShootInput} />
-            <input type="text" name="column" placeholder="column" value={columnShootInput} onChange={handleColumnShootInput} />
-            <button onClick={shootPc}>SHOOT</button>
-
-
-            <Board />
-
+            <div className="boards">
+                <div>
+                    <p>PLAYER BOARD</p>
+                    <table className="boards-each">
+                        <tbody >
+                            {playerBoard.map((rows, rowIndex) => (
+                                <tr key={rowIndex} >
+                                    {
+                                        rows.map((cols, colIndex) => (
+                                            <button key={colIndex} className="square"
+                                                onClick={e => recieveShootPlayer(rowIndex, colIndex, e)} />
+                                        ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <h4>{turn} TURN</h4>
+                <div>
+                    <p>PC BOARD</p>
+                    <table className="boards-each">
+                        <tbody >
+                            {PcBoard.map((rows, rowIndex) => (
+                                <tr key={rowIndex} >
+                                    {
+                                        rows.map((cols, colIndex) => (
+                                            <button key={colIndex} className="square"
+                                                onClick={e => recieveShootPc(rowIndex, colIndex, e)} />
+                                        ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 }

@@ -1,6 +1,21 @@
-.empty-square{
-    display: inline-block;
+
+
+.square{
     height: 30px;
     width: 30px;
-    background-color: #555;  
+    background-color: rgb(85, 85, 85);  
+}
+.boards-each{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.boards{
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
 }
