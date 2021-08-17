@@ -1,40 +1,18 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Board from '../components/Board'
+import Square from '../components/Square'
 
 const GamePage = () => {
     let [board, setBoard] = useState([])
     let [PcBoard, setPcBoard] = useState([])
 
     useEffect(() => {
-        console.log("ASHIPDASIPHDASPIOHDF")
-        setBoard([
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ]);
-        setPcBoard([
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ]);
-        console.log(board)
-    }, [])
+        setBoard(new Array(10).fill(0).map(() => new Array(10).fill(0))); //setting 2d array 10x10
+        setPcBoard(new Array(10).fill(0).map(() => new Array(10).fill(0)));//setting 2d array 10x10
 
+    }, [])
+    console.log('board', board)
     /////Player board/////
     const [rowInput, setRowInput] = useState()
     const [columnInput, setColumnInput] = useState()
@@ -107,8 +85,8 @@ const GamePage = () => {
     };
 
     let shootPlayer = () => {
-
     };
+
 
     return (
         <div className="">
@@ -120,6 +98,7 @@ const GamePage = () => {
             <input type="text" name="row" placeholder="row" value={rowShootInput} onChange={handleRowShootInput} />
             <input type="text" name="column" placeholder="column" value={columnShootInput} onChange={handleColumnShootInput} />
             <button onClick={shootPc}>SHOOT</button>
+
 
             <Board />
 
