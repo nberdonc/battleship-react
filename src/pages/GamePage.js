@@ -1,8 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import Board from '../components/Board'
-
-import uniqid from 'uniqid'
 import './GamePage.css';
 
 const GamePage = () => {
@@ -62,6 +59,20 @@ const GamePage = () => {
             console.log(PcBoard)
         }
     };
+
+    //PC: Random coordinates for PC's board
+    const getRandomCoordinates = () => {
+        rowEnemy = Math.floor(Math.random() * (10 - shipLength + 1));
+        colEnemy = Math.floor(Math.random() * 10);
+    };
+
+    //PC: Place random coordinates on PC's board
+    const placeShipsRandomly = () => {
+        getRandomCoordinates()
+        PcBoard[rowEnemy - 1][colEnemy - 1] = 1
+        console.log("PcBoard", PcBoard)
+    };
+
     //PC: shoots random to player's board
     let recieveShootPlayer = (rowIndex, colIndex, e) => {
         if (playerBoard[rowIndex][colIndex] === 1) {
@@ -78,18 +89,6 @@ const GamePage = () => {
             console.log(playerBoard)
         }
     };
-    //PC: Random coordinates for PC's board
-    const getRandomCoordinates = () => {
-        rowEnemy = Math.floor(Math.random() * (10 - shipLength + 1));
-        colEnemy = Math.floor(Math.random() * 10);
-    };
-
-    //PC: Place random coordinates on PC's board
-    const placeShipsRandomly = async () => {
-        await getRandomCoordinates()
-        PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-        console.log("PcBoard", PcBoard)
-    };
 
 
     return (
@@ -102,36 +101,36 @@ const GamePage = () => {
             <div className="boards">
                 <div>
                     <p>PLAYER BOARD</p>
-                    <table className="boards-each">
-                        <tbody >
+                    <div className="boards-each">
+                        <div >
                             {playerBoard.map((rows, rowIndex) => (
-                                <tr key={rowIndex} >
+                                <div key={rowIndex} >
                                     {
                                         rows.map((cols, colIndex) => (
                                             <button key={colIndex} className="square"
                                                 onClick={e => recieveShootPlayer(rowIndex, colIndex, e)} />
                                         ))}
-                                </tr>
+                                </div>
                             ))}
-                        </tbody>
-                    </table>
+                        </div>
+                    </div>
                 </div>
                 <h4>{turn} TURN</h4>
                 <div>
                     <p>PC BOARD</p>
-                    <table className="boards-each">
-                        <tbody >
+                    <div className="boards-each">
+                        <div >
                             {PcBoard.map((rows, rowIndex) => (
-                                <tr key={rowIndex} >
+                                <div key={rowIndex} >
                                     {
                                         rows.map((cols, colIndex) => (
                                             <button key={colIndex} className="square"
                                                 onClick={e => recieveShootPc(rowIndex, colIndex, e)} />
                                         ))}
-                                </tr>
+                                </div>
                             ))}
-                        </tbody>
-                    </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
