@@ -1,21 +1,97 @@
 
-
-.square{
-    height: 30px;
-    width: 30px;
-    background-color: rgb(85, 85, 85);  
-}
-.boards-each{
-    height: 100%;
-    padding: 0;
-    margin: 0;
+.grid{
+    width: 400px;
+    height: 400px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-wrap: wrap;
+    background-color: ridge;
+}
+.square{
+    height: 37px;
+    width: 37px;
+    background-color: rgb(85, 85, 85); 
+    border-color: beige;
+    border-width: 0.5px;
+    border-style: solid;
 }
 
-.boards{
+.square:hover{
+    background-color: rgb(168, 161, 161);  
+}
+
+.all-boards{
     display: flex;
     align-items: center;
     justify-content:space-around;
+}
+
+.ships{
+    width: 400px;
+    height: 250px;
+    margin: 20px;
+    background-color: #474a52;
+}
+
+.ship div{
+   width: 40px;
+   height: 40px; 
+}
+.destroyer-container{
+    width: 80px; 
+    height: 40px;
+    background-color: rgb(166, 176, 223);
+    display: flex;
+    margin:10px;
+}
+
+.destroyer-container:hover{
+    background-color: rgb(126, 142, 218);
+}
+
+.submarine-container{
+    width: 120px; 
+    height: 40px;
+    background-color: rgb(212, 166, 223);
+    display: flex;
+    margin:10px;
+}
+
+.submarine-container:hover{
+    background-color: rgb(194, 83, 209);
+}
+
+.cruiser-container{
+    width: 120px; 
+    height: 40px;
+    background-color: rgb(166, 223, 178);
+    display: flex;
+    margin:10px;
+}
+
+.cruiser-container:hover{
+    background-color: rgb(65, 201, 144);
+}
+
+.battleship-container{
+    width: 160px; 
+    height: 40px;
+    background-color: rgb(176, 196, 103);
+    display: flex;
+    margin:10px;
+}
+
+.battleship-container:hover{
+    background-color: rgb(197, 195, 57);
+}
+
+.carrier-container{
+    width: 200px; 
+    height: 40px;
+    background-color: rgb(190, 151, 119);
+    display: flex;
+    margin:10px;
+}
+
+.carrier-container:hover{
+    background-color: rgb(211, 182, 52);
 }
