@@ -2,15 +2,27 @@ import React from 'react';
 
 const ShipsDragNDrop = () => {
 
+    let shipList = [
+        { name: "cruiser-container", length: "1" },
+        { name: "destroyer-container", length: "2" },
+        { name: "submarine-container", length: "3" },
+        { name: "battleship-container", length: "4" },
+        { name: "carrier-container", length: "5" }
+    ]
 
     const handleDragStart = (e) => {
-        console.log(e.target.name)
+        console.log(e.target.name, e.target.value)
+        e.dataTransfer.setData('ship', e.target.name)
     }
 
 
     return (
         <div className="ships-container">
-            <button onDragStart={handleDragStart} draggable="true" className="ship cruiser-container" value="1" name="cruiser-container">
+            {shipList.map((ele, eleIdx) => (
+                <button key={eleIdx} onDragStart={handleDragStart} draggable="true" className={ele.name} name={ele.name} value={ele.length} />
+            ))}
+
+            {/* <button onDragStart={handleDragStart} draggable="true" className="ship cruiser-container" value="1" name="cruiser-container">
                 <div id="cruiser-0"></div>
             </button>
             <button onDragStart={handleDragStart} draggable="true" className="ship destroyer-container" value="2" name="destroyer-container">
@@ -34,7 +46,7 @@ const ShipsDragNDrop = () => {
                 <div id="carrier-2"></div>
                 <div id="carrier-3"></div>
                 <div id="carrier-4"></div>
-            </button>
+            </button> */}
         </div>
     )
 }

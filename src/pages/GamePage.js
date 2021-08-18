@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import './GamePage.css';
 import ShipsDragNDrop from '../components/ShipsDragNDrop'
 
-const GamePage = () => {
+const GamePage = ({ shipList }) => {
     let [playerBoard, setPlayerBoard] = useState([])
     let [PcBoard, setPcBoard] = useState([])
     let [startGame, setStartGame] = useState("off")
@@ -109,14 +109,33 @@ const GamePage = () => {
 
     }
 
-    //dragging
+    //dragging & dropping
 
-    let receiveDraggedElements = (e) => {
+
+    let allowDrop = (e) => {
         e.preventDefault();
+        // The default action of onDragOver 
+        // is to cancel the drop operation  -.-
+        // so we need to prevent that
     }
 
-    let updateDragAndDropState = (e) => {
+    let drop = (e) => {
+        const thingBeingDragged = e.dataTransfer.getData('ship');
+        //e.target.appendChild(document.getElementById(thingBeingDragged));
+        // because the onDragLeave won't fire after onDrop
+        //e.target.classList.remove("activeDropArea")
+    }
 
+    let dragEnter = (e) => {
+        // Drag Enter is used to
+        // highlight the drop area
+        //e.target.classList.add("activeDropArea")
+    }
+
+    let dragLeave = (e) => {
+        // Drag Leave is used to
+        // remove the highlight in the drop area
+        //e.target.classList.remove("activeDropArea")
     }
 
 
@@ -132,7 +151,12 @@ const GamePage = () => {
             <div className="all-boards">
                 <div>
                     <p>PLAYER BOARD</p>
-                    <div className="grid" onDrop={updateDragAndDropState} onDragOver={receiveDraggedElements}>
+                    <div className="grid"
+                        onDrop={drop}
+                        onDragOver={allowDrop}
+                        onDragEnter={dragEnter}
+                        onDragLeave={dragLeave}>
+
                         {playerBoard.map((rows, rowIndex) => (
                             <div key={rowIndex} >
                                 {
