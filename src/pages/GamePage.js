@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './GamePage.css';
+import ShipsDragNDrop from '../components/ShipsDragNDrop'
 
 const GamePage = () => {
     let [playerBoard, setPlayerBoard] = useState([])
@@ -108,6 +109,18 @@ const GamePage = () => {
 
     }
 
+    //dragging
+
+    let receiveDraggedElements = (e) => {
+        e.preventDefault();
+    }
+
+    let updateDragAndDropState = (e) => {
+
+    }
+
+
+
     return (
         <div className="">
             <h2>Hello</h2>
@@ -119,69 +132,38 @@ const GamePage = () => {
             <div className="all-boards">
                 <div>
                     <p>PLAYER BOARD</p>
-                    <div>
-                        <div className="grid">
-                            {playerBoard.map((rows, rowIndex) => (
-                                <div key={rowIndex} >
-                                    {
-                                        rows.map((cols, colIndex) => (
-                                            <div key={colIndex} className="square"
-                                                onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}></div>
-                                        ))}
-                                </div>
-                            ))}
-                        </div>
+                    <div className="grid" onDrop={updateDragAndDropState} onDragOver={receiveDraggedElements}>
+                        {playerBoard.map((rows, rowIndex) => (
+                            <div key={rowIndex} >
+                                {
+                                    rows.map((cols, colIndex) => (
+                                        <div key={colIndex} className="square"
+                                            onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}></div>
+                                    ))}
+                            </div>
+                        ))}
+                        <ShipsDragNDrop />
                     </div>
                 </div>
                 <h4>{turn} TURN</h4>
                 <div>
                     <p>PC BOARD</p>
-                    <div>
-                        <div className="grid">
-                            {PcBoard.map((rows, rowIndex) => (
-                                <div key={rowIndex} >
-                                    {
-                                        rows.map((cols, colIndex) => (
-                                            <div key={colIndex} className="square"
-                                                onClick={e => recieveShootPc(rowIndex, colIndex, e)}></div>
-                                        ))}
-                                </div>
-                            ))}
-                        </div>
+                    <div className="grid">
+                        {PcBoard.map((rows, rowIndex) => (
+                            <div key={rowIndex} >
+                                {
+                                    rows.map((cols, colIndex) => (
+                                        <div key={colIndex} className="square"
+                                            onClick={e => recieveShootPc(rowIndex, colIndex, e)}></div>
+                                    ))}
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
             <button onClick={startGameBtn}>START</button>
             <h4 className="info"></h4>
-            <div className="ships">
-                <div className="ship destroyer-container" draggable="true">
-                    <div id="destroyer-0"></div>
-                    <div id="destroyer-1"></div>
-                </div>
-                <div className="ship submarine-container" draggable="true">
-                    <div id="submarine-0"></div>
-                    <div id="submarine-1"></div>
-                    <div id="submarine-2"></div>
-                </div>
-                <div className="ship cruiser-container" draggable="true">
-                    <div id="cruiser-0"></div>
-                    <div id="cruiser-1"></div>
-                    <div id="cruiser-2"></div>
-                </div>
-                <div className="ship battleship-container" draggable="true">
-                    <div id="battleship-0"></div>
-                    <div id="battleship-1"></div>
-                    <div id="battleship-2"></div>
-                    <div id="battleship-3"></div>
-                </div>
-                <div className="ship carrier-container" draggable="true">
-                    <div id="carrier-0"></div>
-                    <div id="carrier-1"></div>
-                    <div id="carrier-2"></div>
-                    <div id="carrier-3"></div>
-                    <div id="carrier-4"></div>
-                </div>
-            </div>
+
         </div>
     );
 }
