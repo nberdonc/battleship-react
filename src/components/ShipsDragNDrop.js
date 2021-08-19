@@ -2,13 +2,6 @@ import React from 'react';
 
 export const ShipsDragNDrop = ({ shipList }) => {
 
-    // let shipList = [
-    //     { name: "cruiser-container", length: "1" },
-    //     { name: "destroyer-container", length: "2" },
-    //     { name: "submarine-container", length: "3" },
-    //     { name: "battleship-container", length: "4" },
-    //     { name: "carrier-container", length: "5" }
-    // ]
     let rotated = false;
     const handleDragStart = (e) => {
         const data = JSON.stringify({
@@ -23,7 +16,7 @@ export const ShipsDragNDrop = ({ shipList }) => {
             name: e.target.name,
         });
         e.dataTransfer.setData("ship", data);
-        console.log("/shipname:", e.target.name, "/shiplength:", e.target.value)
+        //console.log("/shipname:", e.target.name, "/shiplength:", e.target.value)
     }
 
     const handleClick = (e) => {

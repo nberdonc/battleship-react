@@ -3,15 +3,13 @@ import { useState, useEffect } from 'react';
 import './GamePage.css';
 import { ShipsDragNDrop } from '../components/ShipsDragNDrop'
 
-const GamePage = ({ shipList }) => {
+const GamePage = ({ shipList, setShipList }) => {
     const [playerBoard, setPlayerBoard] = useState([])
     const [PcBoard, setPcBoard] = useState([])
     const [startGame, setStartGame] = useState("off")
-    const [placedShips, setPlacedShips] = useState("no")
     const [turn, setTurn] = useState("")
 
-    const [shipLength, setShipLength] = useState(1)
-
+    //Grid rows & cols
     let cols = 10;
     let rows = 10;
 
@@ -19,25 +17,19 @@ const GamePage = ({ shipList }) => {
     useEffect(() => {
         setPlayerBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0))); //setting 2d array 10x10
         setPcBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0)));//setting 2d array 10x10
-
     }, [])
 
-    /////PC's board/////
+
+    /////PC's board to shoot bombs/////
     let rowEnemy = 0
     let colEnemy = 0
-    ////////////////////////////////////////
 
     //Player: place coordinates on player board
     let placeShips = (coord, data) => {
         let row = coord[0]
         let col = coord[2] // todo arreglar id
-        console.log("drop coord:", coord)
-        console.log("data:", data)
-
         playerBoard[row][col] = 1
-        //placeShipsRandomly() //on PC's board
-
-        console.log("shiplist", shipList)
+        placeShipsRandomly(data.size) //on PC's board
         console.log("PlayerBoard", playerBoard)
     };
 
@@ -63,18 +55,19 @@ const GamePage = ({ shipList }) => {
     };
 
     //PC: Random coordinates for PC's board
-    const getRandomCoordinates = () => {
-        rowEnemy = Math.floor(Math.random() * (10 - shipLength + 1));
+    const getRandomCoordinates = (size) => {
+        rowEnemy = Math.floor(Math.random() * (10 - size + 1));
         colEnemy = Math.floor(Math.random() * 10);
+        console.log("row&colenemy", rowEnemy, colEnemy)
     };
 
     //PC: Place random coordinates on PC's board
-    const placeShipsRandomly = () => {
-        getRandomCoordinates()
+    const placeShipsRandomly = (size) => {
+        getRandomCoordinates(size)
         PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-        setPlacedShips("yes")
         console.log("PcBoard", PcBoard)
     };
+
 
     //PC: shoots random to player's board
     let recieveShootPlayer = (rowIndex, colIndex, e) => {
@@ -82,14 +75,12 @@ const GamePage = ({ shipList }) => {
             if (playerBoard[rowIndex][colIndex] === 1) {
                 playerBoard[rowIndex][colIndex] = 'x'
                 console.log("hit")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
+                console.log('row', rowIndex, '/col', colIndex)
                 console.log(playerBoard)
             } else {
                 playerBoard[rowIndex][colIndex] = 'o'
                 console.log("miss")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
+                console.log('row', rowIndex, '/col', colIndex)
                 console.log(playerBoard)
             }
             setTurn("YOUR")
@@ -98,39 +89,27 @@ const GamePage = ({ shipList }) => {
 
     //Start Game Function
     let startGameBtn = (e) => {
-        if (placedShips === "yes") {
+        if (shipList.length === 0) {
             setStartGame("on")
             setTurn("YOUR")
         }
-
     }
 
-    //dragging & dropping
+    //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
     let dragOver = (e) => {
         e.preventDefault();
-        // The default action of onDragOver 
-        // is to cancel the drop operation  -.-
-        // so we need to prevent that
     }
 
+    let data = []
     let drop = (e) => {
         e.preventDefault();
-        let data = JSON.parse(e.dataTransfer.getData("ship"));
+        data = JSON.parse(e.dataTransfer.getData("ship"));
         let coord = e.target.id
-        setShipLength(data.size)
+        e.target.classList.add("shipdropedColor");//to add new style to our target
+        const newShipList = shipList.filter(ship => ship.name !== data.name)//delete ship droped from shipList
+        setShipList(newShipList)
         placeShips(coord, data)
-
-
-        // because the onDragLeave won't fire after onDrop
     }
-
-    let dragLeave = (e) => {
-        // Drag Leave is used to
-        // remove the highlight in the drop area
-        //e.target.classList.remove("activeDropArea")
-    }
-
-
 
     return (
         <div className="">
@@ -142,8 +121,7 @@ const GamePage = ({ shipList }) => {
                     <div className="grid"
                         onDrop={(e) => drop(e)}
                         onDragOver={(e) => dragOver(e)}
-                        onDragLeave={dragLeave}>
-
+                    >
                         {playerBoard.map((rows, rowIndex) => (
                             <div key={rowIndex} >
                                 {

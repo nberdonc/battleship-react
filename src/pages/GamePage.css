@@ -96,3 +96,7 @@
 .carrier-container:hover{
     background-color: rgb(211, 182, 52);
 }
+
+.shipdropedColor{
+    background-color: rgb(119, 190, 128);
+}
