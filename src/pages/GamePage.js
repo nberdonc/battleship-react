@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './GamePage.css';
-import ShipsDragNDrop from '../components/ShipsDragNDrop'
+import { ShipsDragNDrop } from '../components/ShipsDragNDrop'
 
-const GamePage = ({ shipList }) => {
+const GamePage = ({ shipList, setShipList }) => {
     let [playerBoard, setPlayerBoard] = useState([])
     let [PcBoard, setPcBoard] = useState([])
     let [startGame, setStartGame] = useState("off")
@@ -11,6 +11,7 @@ const GamePage = ({ shipList }) => {
     let [turn, setTurn] = useState("")
     let cols = 10;
     let rows = 10;
+
 
 
     useEffect(() => {
@@ -112,7 +113,7 @@ const GamePage = ({ shipList }) => {
     //dragging & dropping
 
 
-    let allowDrop = (e) => {
+    let dragOver = (e) => {
         e.preventDefault();
         // The default action of onDragOver 
         // is to cancel the drop operation  -.-
@@ -120,10 +121,12 @@ const GamePage = ({ shipList }) => {
     }
 
     let drop = (e) => {
-        const thingBeingDragged = e.dataTransfer.getData('ship');
-        //e.target.appendChild(document.getElementById(thingBeingDragged));
+        e.preventDefault();
+        let data = e.dataTransfer.getData("ship");
+        //placeShip(coords, data);
+        console.log("data", data)
+        console.log("eclientX", e.clientX)
         // because the onDragLeave won't fire after onDrop
-        //e.target.classList.remove("activeDropArea")
     }
 
     let dragEnter = (e) => {
@@ -152,8 +155,8 @@ const GamePage = ({ shipList }) => {
                 <div>
                     <p>PLAYER BOARD</p>
                     <div className="grid"
-                        onDrop={drop}
-                        onDragOver={allowDrop}
+                        onDrop={(e) => drop(e)}
+                        onDragOver={(e) => dragOver(e)}
                         onDragEnter={dragEnter}
                         onDragLeave={dragLeave}>
 
@@ -166,7 +169,6 @@ const GamePage = ({ shipList }) => {
                                     ))}
                             </div>
                         ))}
-                        <ShipsDragNDrop />
                     </div>
                 </div>
                 <h4>{turn} TURN</h4>
@@ -177,7 +179,7 @@ const GamePage = ({ shipList }) => {
                             <div key={rowIndex} >
                                 {
                                     rows.map((cols, colIndex) => (
-                                        <div key={colIndex} className="square"
+                                        <div key={colIndex} className="square" id={colIndex}
                                             onClick={e => recieveShootPc(rowIndex, colIndex, e)}></div>
                                     ))}
                             </div>
@@ -186,8 +188,8 @@ const GamePage = ({ shipList }) => {
                 </div>
             </div>
             <button onClick={startGameBtn}>START</button>
+            <ShipsDragNDrop shipList={shipList} />
             <h4 className="info"></h4>
-
         </div>
     );
 }

@@ -10,6 +10,15 @@ function App() {
   //PAGE STATES//
   const [appState, setAppstate] = useState('welcome')
 
+  //SHIP LIST
+  let shipList = [
+    { name: "cruiser-container", length: "1" },
+    { name: "destroyer-container", length: "2" },
+    { name: "submarine-container", length: "3" },
+    { name: "battleship-container", length: "4" },
+    { name: "carrier-container", length: "5" }
+  ]
+
   const startPlaying = () => {
     setAppstate('play');
   }
@@ -18,7 +27,7 @@ function App() {
 
   return (
     <div className="App">
-      {appState === 'play' ? <GamePage /> : <WelcomePage startPlaying={startPlaying} />}
+      {appState === 'play' ? <GamePage shipList={shipList} /> : <WelcomePage startPlaying={startPlaying} />}
     </div>
   );
 }

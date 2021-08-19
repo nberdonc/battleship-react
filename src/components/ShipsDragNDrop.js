@@ -1,25 +1,51 @@
 import React from 'react';
 
-const ShipsDragNDrop = () => {
+export const ShipsDragNDrop = ({ shipList }) => {
 
-    let shipList = [
-        { name: "cruiser-container", length: "1" },
-        { name: "destroyer-container", length: "2" },
-        { name: "submarine-container", length: "3" },
-        { name: "battleship-container", length: "4" },
-        { name: "carrier-container", length: "5" }
-    ]
-
+    // let shipList = [
+    //     { name: "cruiser-container", length: "1" },
+    //     { name: "destroyer-container", length: "2" },
+    //     { name: "submarine-container", length: "3" },
+    //     { name: "battleship-container", length: "4" },
+    //     { name: "carrier-container", length: "5" }
+    // ]
+    let rotated = false;
     const handleDragStart = (e) => {
-        console.log(e.target.name, e.target.value)
-        e.dataTransfer.setData('ship', e.target.name)
+        const data = JSON.stringify({
+            size: e.target.value,
+            offsetY: Math.floor(
+                (e.clientY - e.target.getBoundingClientRect().top) / 50 // Calculate the position of the player's cursor on the ship
+            ),
+            offsetX: Math.floor(
+                (e.clientX - e.target.getBoundingClientRect().left) / 50
+            ),
+            rotated: rotated,
+            id: e.target.name,
+        });
+        e.dataTransfer.setData("ship", data);
+        console.log("/shipname:", e.target.name, "/shiplength:", e.target.value)
     }
 
+    const handleClick = (e) => {
+        if (!rotated) {
+            e.target.parentNode.style.transform = "rotate(90deg)";
+        } else {
+            e.target.parentNode.style.transform = "";
+        }
+        rotated = !rotated;
+    };
 
     return (
         <div className="ships-container">
             {shipList.map((ele, eleIdx) => (
-                <button key={eleIdx} onDragStart={handleDragStart} draggable="true" className={ele.name} name={ele.name} value={ele.length} />
+                <button
+                    key={eleIdx}
+                    onDragStart={handleDragStart}
+                    draggable="true"
+                    className={ele.name}
+                    name={ele.name}
+                    value={ele.length}
+                    onClick={(e) => handleClick(e)} />
             ))}
 
             {/* <button onDragStart={handleDragStart} draggable="true" className="ship cruiser-container" value="1" name="cruiser-container">
@@ -46,10 +72,11 @@ const ShipsDragNDrop = () => {
                 <div id="carrier-2"></div>
                 <div id="carrier-3"></div>
                 <div id="carrier-4"></div>
-            </button> */}
+            </button> 
+*/
+            }
         </div>
     )
 }
 
-export default ShipsDragNDrop;
 
