@@ -3,47 +3,42 @@ import { useState, useEffect } from 'react';
 import './GamePage.css';
 import { ShipsDragNDrop } from '../components/ShipsDragNDrop'
 
-const GamePage = ({ shipList, setShipList }) => {
-    let [playerBoard, setPlayerBoard] = useState([])
-    let [PcBoard, setPcBoard] = useState([])
-    let [startGame, setStartGame] = useState("off")
-    let [placedShips, setPlacedShips] = useState("no")
-    let [turn, setTurn] = useState("")
+const GamePage = ({ shipList }) => {
+    const [playerBoard, setPlayerBoard] = useState([])
+    const [PcBoard, setPcBoard] = useState([])
+    const [startGame, setStartGame] = useState("off")
+    const [placedShips, setPlacedShips] = useState("no")
+    const [turn, setTurn] = useState("")
+
+    const [shipLength, setShipLength] = useState(1)
+
     let cols = 10;
     let rows = 10;
 
-
-
+    //initialize just once
     useEffect(() => {
         setPlayerBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0))); //setting 2d array 10x10
         setPcBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0)));//setting 2d array 10x10
 
     }, [])
 
-    /////Player board///// to change for drag and drop
-    const [rowInput, setRowInput] = useState()
-    const [columnInput, setColumnInput] = useState()
-
     /////PC's board/////
-    const shipLength = 1
     let rowEnemy = 0
     let colEnemy = 0
     ////////////////////////////////////////
 
-
-    //Player: get coordinates from input of player
-    let handleRowInput = (e) => {
-        setRowInput(parseInt(e.target.value))
-    };
-
-    let handleColumnInput = (e) => {
-        setColumnInput(parseInt(e.target.value))
-    };
     //Player: place coordinates on player board
-    let placeShips = (e) => {
-        playerBoard[rowInput - 1][columnInput - 1] = 1
+    let placeShips = (coord, data) => {
+        let row = coord[0]
+        let col = coord[2] // todo arreglar id
+        console.log("drop coord:", coord)
+        console.log("data:", data)
+
+        playerBoard[row][col] = 1
+        //placeShipsRandomly() //on PC's board
+
+        console.log("shiplist", shipList)
         console.log("PlayerBoard", playerBoard)
-        placeShipsRandomly() //on PC's board
     };
 
     //Player: shoots to coordinates on PC's board
@@ -111,8 +106,6 @@ const GamePage = ({ shipList, setShipList }) => {
     }
 
     //dragging & dropping
-
-
     let dragOver = (e) => {
         e.preventDefault();
         // The default action of onDragOver 
@@ -122,17 +115,13 @@ const GamePage = ({ shipList, setShipList }) => {
 
     let drop = (e) => {
         e.preventDefault();
-        let data = e.dataTransfer.getData("ship");
-        //placeShip(coords, data);
-        console.log("data", data)
-        console.log("eclientX", e.clientX)
-        // because the onDragLeave won't fire after onDrop
-    }
+        let data = JSON.parse(e.dataTransfer.getData("ship"));
+        let coord = e.target.id
+        setShipLength(data.size)
+        placeShips(coord, data)
 
-    let dragEnter = (e) => {
-        // Drag Enter is used to
-        // highlight the drop area
-        //e.target.classList.add("activeDropArea")
+
+        // because the onDragLeave won't fire after onDrop
     }
 
     let dragLeave = (e) => {
@@ -147,24 +136,19 @@ const GamePage = ({ shipList, setShipList }) => {
         <div className="">
             <h2>Hello</h2>
             <h3>Give me your coordinates</h3>
-            <input type="text" name="row" placeholder="row" value={rowInput} onChange={handleRowInput} />
-            <input type="text" name="column" placeholder="column" value={columnInput} onChange={handleColumnInput} />
-            <button onClick={placeShips}>PLACE SHIP</button>
-
             <div className="all-boards">
                 <div>
                     <p>PLAYER BOARD</p>
                     <div className="grid"
                         onDrop={(e) => drop(e)}
                         onDragOver={(e) => dragOver(e)}
-                        onDragEnter={dragEnter}
                         onDragLeave={dragLeave}>
 
                         {playerBoard.map((rows, rowIndex) => (
                             <div key={rowIndex} >
                                 {
                                     rows.map((cols, colIndex) => (
-                                        <div key={colIndex} className="square"
+                                        <div key={colIndex} className="square" id={[colIndex, rowIndex]}
                                             onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}></div>
                                     ))}
                             </div>
@@ -179,7 +163,7 @@ const GamePage = ({ shipList, setShipList }) => {
                             <div key={rowIndex} >
                                 {
                                     rows.map((cols, colIndex) => (
-                                        <div key={colIndex} className="square" id={colIndex}
+                                        <div key={colIndex} className="square" id={[colIndex, rowIndex]}
                                             onClick={e => recieveShootPc(rowIndex, colIndex, e)}></div>
                                     ))}
                             </div>

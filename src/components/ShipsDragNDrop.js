@@ -20,7 +20,7 @@ export const ShipsDragNDrop = ({ shipList }) => {
                 (e.clientX - e.target.getBoundingClientRect().left) / 50
             ),
             rotated: rotated,
-            id: e.target.name,
+            name: e.target.name,
         });
         e.dataTransfer.setData("ship", data);
         console.log("/shipname:", e.target.name, "/shiplength:", e.target.value)
