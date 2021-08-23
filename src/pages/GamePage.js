@@ -8,20 +8,19 @@ const GamePage = ({ shipList, setShipList }) => {
     const [PcBoard, setPcBoard] = useState([])
     const [startGame, setStartGame] = useState("off")
     const [turn, setTurn] = useState("")
+    const [elRefs, setElRefs] = useState([]);
 
     //Grid rows & cols
     let cols = 10;
     let rows = 10;
 
+
     //initialize just once
     useEffect(() => {
         setPlayerBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0))); //setting 2d array 10x10
         setPcBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0)));//setting 2d array 10x10
+        console.log("sr", document.getElementById("pepe"))
     }, [])
-
-    /////PC's board to shoot bombs/////
-    let rowEnemy = 0
-    let colEnemy = 0
 
     //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
     let dragOver = (e) => {
@@ -36,38 +35,68 @@ const GamePage = ({ shipList, setShipList }) => {
         if (e.target.className === "square shipdropedColor") {
             return
         } else {
-            e.target.classList.add("shipdropedColor");//to add new style to our target
             const newShipList = shipList.filter(ship => ship.name !== data.name)//delete ship droped from shipList
             setShipList(newShipList)
         }
-        placeShips(coord, data)
-        console.log(e.target)
+        placeShips(coord, data, e)
+        console.log(coord)
     }
 
     //Player: place coordinates on player board
-    let placeShips = (coord, data) => {
+    let placeShips = (coord, data, e) => {
+        console.log("id", e.target.id)
         let row = parseInt(coord[0])
         let col = parseInt(coord[2]) // todo arreglar id
 
         if (data.size === "1") {
             playerBoard[row][col] = 1
+            e.target.classList.add("shipdropedColor");//to add new style to our target
         }
-        else if (data.size === "2") {
+
+        if (data.size === "2" && col <= 8) {
             playerBoard[row][col] = 1
             playerBoard[row][col + 1] = 1
+            e.target.classList.add("shipdropedColor");//to add new style to our target
+            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
         }
-        else if (data.size === "3") {
+        else { return }
+
+        if (data.size === "3" && col <= 7) {
             playerBoard[row][col] = 1
             playerBoard[row][col + 1] = 1
             playerBoard[row][col + 2] = 1
+            e.target.classList.add("shipdropedColor");//to add new style to our target
+            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
+            document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
         }
-        else if (data.size === "5") {
+        else { return }
+
+        if (data.size === "4" && col <= 6) {
+            playerBoard[row][col] = 1
+            playerBoard[row][col + 1] = 1
+            playerBoard[row][col + 2] = 1
+            playerBoard[row][col + 3] = 1
+            e.target.classList.add("shipdropedColor");//to add new style to our target
+            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
+            document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
+            document.getElementById(`${row},${col + 3}`).classList.add("shipdropedColor");
+        }
+        else { return }
+
+        if (data.size === "5" && col <= 5) {
             playerBoard[row][col] = 1
             playerBoard[row][col + 1] = 1
             playerBoard[row][col + 2] = 1
             playerBoard[row][col + 3] = 1
             playerBoard[row][col + 4] = 1
+            e.target.classList.add("shipdropedColor");//to add new style to our target
+            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
+            document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
+            document.getElementById(`${row},${col + 3}`).classList.add("shipdropedColor");
+            document.getElementById(`${row},${col + 4}`).classList.add("shipdropedColor");
         }
+        else { return }
+
         placeShipsRandomly(data.size) //on PC's board
         console.log("PlayerBoard", playerBoard)
         console.log("row& col", row + 1, col)
@@ -75,15 +104,37 @@ const GamePage = ({ shipList, setShipList }) => {
     };
 
     //PC: Place random coordinates on PC's board
+    let rowEnemy = 0
+    let colEnemy = 0
     const placeShipsRandomly = (size) => {
         let direction = generateRandomDirection()
         getRandomCoordinates(size)
 
-        if (direction === 0) {
+        if (size === "1") {
             PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-        } else {
-            console.log("vertical!")
-            //e.target.parentNode.style.transform = "rotate(90deg)";
+        }
+        else if (data.size === "2") {
+            console.log("roenemy", rowEnemy)
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
+            PcBoard[rowEnemy - 1][colEnemy] = 1
+        }
+        else if (data.size === "3") {
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
+            PcBoard[rowEnemy - 1][colEnemy] = 1
+            PcBoard[rowEnemy - 1][colEnemy + 1] = 1
+        }
+        else if (data.size === "4") {
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
+            PcBoard[rowEnemy - 1][colEnemy] = 1
+            PcBoard[rowEnemy - 1][colEnemy + 1] = 1
+            PcBoard[rowEnemy - 1][colEnemy + 2] = 1
+        }
+        else if (data.size === "5") {
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
+            PcBoard[rowEnemy - 1][colEnemy] = 1
+            PcBoard[rowEnemy - 1][colEnemy + 1] = 1
+            PcBoard[rowEnemy - 1][colEnemy + 2] = 1
+            PcBoard[rowEnemy - 1][colEnemy + 3] = 1
         }
 
         console.log("PcBoard", PcBoard)
@@ -149,7 +200,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
     return (
         <div className="">
-            <h2>Hello</h2>
+            <h2 id="pepe">Hello</h2>
             <h3>Give me your coordinates</h3>
             <div className="all-boards">
                 <div>
@@ -163,7 +214,9 @@ const GamePage = ({ shipList, setShipList }) => {
                                 {
                                     rows.map((cols, colIndex) => (
                                         <div key={colIndex} className="square" id={[colIndex, rowIndex]}
-                                            onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}></div>
+                                            onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}
+
+                                        ></div>
                                     ))}
                             </div>
                         ))}

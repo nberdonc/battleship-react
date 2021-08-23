@@ -66,8 +66,7 @@ export const ShipsDragNDrop = ({ shipList }) => {
                 <div id="carrier-3"></div>
                 <div id="carrier-4"></div>
             </button> 
-*/
-            }
+*/            }
         </div>
     )
 }
