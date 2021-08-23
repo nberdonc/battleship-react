@@ -41,16 +41,36 @@ const GamePage = ({ shipList, setShipList }) => {
             setShipList(newShipList)
         }
         placeShips(coord, data)
+        console.log(e.target)
     }
 
     //Player: place coordinates on player board
     let placeShips = (coord, data) => {
-        let row = coord[0]
-        let col = coord[2] // todo arreglar id
+        let row = parseInt(coord[0])
+        let col = parseInt(coord[2]) // todo arreglar id
 
-        playerBoard[row][col] = 1
+        if (data.size === "1") {
+            playerBoard[row][col] = 1
+        }
+        else if (data.size === "2") {
+            playerBoard[row][col] = 1
+            playerBoard[row][col + 1] = 1
+        }
+        else if (data.size === "3") {
+            playerBoard[row][col] = 1
+            playerBoard[row][col + 1] = 1
+            playerBoard[row][col + 2] = 1
+        }
+        else if (data.size === "5") {
+            playerBoard[row][col] = 1
+            playerBoard[row][col + 1] = 1
+            playerBoard[row][col + 2] = 1
+            playerBoard[row][col + 3] = 1
+            playerBoard[row][col + 4] = 1
+        }
         placeShipsRandomly(data.size) //on PC's board
         console.log("PlayerBoard", playerBoard)
+        console.log("row& col", row + 1, col)
         console.log("data", data)
     };
 
@@ -62,7 +82,7 @@ const GamePage = ({ shipList, setShipList }) => {
         if (direction === 0) {
             PcBoard[rowEnemy - 1][colEnemy - 1] = 1
         } else {
-            console.log("vartical!")
+            console.log("vertical!")
             //e.target.parentNode.style.transform = "rotate(90deg)";
         }
 
