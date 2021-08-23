@@ -8,7 +8,6 @@ const GamePage = ({ shipList, setShipList }) => {
     const [PcBoard, setPcBoard] = useState([])
     const [startGame, setStartGame] = useState("off")
     const [turn, setTurn] = useState("")
-    const [elRefs, setElRefs] = useState([]);
 
     //Grid rows & cols
     let cols = 10;
@@ -19,7 +18,6 @@ const GamePage = ({ shipList, setShipList }) => {
     useEffect(() => {
         setPlayerBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0))); //setting 2d array 10x10
         setPcBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0)));//setting 2d array 10x10
-        console.log("sr", document.getElementById("pepe"))
     }, [])
 
     //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
@@ -34,23 +32,25 @@ const GamePage = ({ shipList, setShipList }) => {
         let coord = e.target.id
         if (e.target.className === "square shipdropedColor") {
             return
-        } else {
-            const newShipList = shipList.filter(ship => ship.name !== data.name)//delete ship droped from shipList
-            setShipList(newShipList)
         }
+
         placeShips(coord, data, e)
         console.log(coord)
     }
 
     //Player: place coordinates on player board
     let placeShips = (coord, data, e) => {
+        const newShipList = shipList.filter(ship => ship.name !== data.name)//delete ship droped from shipList
         console.log("id", e.target.id)
         let row = parseInt(coord[0])
         let col = parseInt(coord[2]) // todo arreglar id
 
+
         if (data.size === "1") {
             playerBoard[row][col] = 1
             e.target.classList.add("shipdropedColor");//to add new style to our target
+            console.log("PlayerBoard", playerBoard)
+            setShipList(newShipList)
         }
 
         if (data.size === "2" && col <= 8) {
@@ -58,8 +58,10 @@ const GamePage = ({ shipList, setShipList }) => {
             playerBoard[row][col + 1] = 1
             e.target.classList.add("shipdropedColor");//to add new style to our target
             document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
+            console.log("PlayerBoard", playerBoard)
+            setShipList(newShipList)
         }
-        else { return }
+        else { console.log(data.size) }
 
         if (data.size === "3" && col <= 7) {
             playerBoard[row][col] = 1
@@ -68,8 +70,10 @@ const GamePage = ({ shipList, setShipList }) => {
             e.target.classList.add("shipdropedColor");//to add new style to our target
             document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
             document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
+            console.log("PlayerBoard", playerBoard)
+            setShipList(newShipList)
         }
-        else { return }
+        else { console.log(data.size) }
 
         if (data.size === "4" && col <= 6) {
             playerBoard[row][col] = 1
@@ -80,10 +84,13 @@ const GamePage = ({ shipList, setShipList }) => {
             document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
             document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
             document.getElementById(`${row},${col + 3}`).classList.add("shipdropedColor");
+            console.log("PlayerBoard", playerBoard)
+            setShipList(newShipList)
         }
-        else { return }
+        else { console.log(data.size) }
 
         if (data.size === "5" && col <= 5) {
+            console.log(data.size)
             playerBoard[row][col] = 1
             playerBoard[row][col + 1] = 1
             playerBoard[row][col + 2] = 1
@@ -94,8 +101,12 @@ const GamePage = ({ shipList, setShipList }) => {
             document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
             document.getElementById(`${row},${col + 3}`).classList.add("shipdropedColor");
             document.getElementById(`${row},${col + 4}`).classList.add("shipdropedColor");
+            console.log("PlayerBoard", playerBoard)
+            setShipList(newShipList)
         }
-        else { return }
+        else {
+            console.log(data.size)
+        }
 
         placeShipsRandomly(data.size) //on PC's board
         console.log("PlayerBoard", playerBoard)
@@ -163,17 +174,17 @@ const GamePage = ({ shipList, setShipList }) => {
     //Player: shoots to coordinates on PC's board
     let recieveShootPc = (rowIndex, colIndex, e) => {
         if (startGame === "on") {
-            if (PcBoard[rowIndex][colIndex] === 1) {
-                PcBoard[rowIndex][colIndex] = 'x'
+            if (PcBoard[colIndex][rowIndex] === 1) {
+                PcBoard[colIndex][rowIndex] = 'x'
                 console.log("hit")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
+                console.log('row', colIndex)
+                console.log('col', rowIndex)
                 console.log(PcBoard)
             } else {
-                PcBoard[rowIndex][colIndex] = 'o'
+                PcBoard[colIndex][rowIndex] = 'o'
                 console.log("miss")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
+                console.log('row', colIndex)
+                console.log('col', rowIndex)
                 console.log(PcBoard)
             }
             setTurn("PC's")
@@ -183,15 +194,15 @@ const GamePage = ({ shipList, setShipList }) => {
     //PC: shoots random to player's board
     let recieveShootPlayer = (rowIndex, colIndex, e) => {
         if (startGame === "on") {
-            if (playerBoard[rowIndex][colIndex] === 1) {
-                playerBoard[rowIndex][colIndex] = 'x'
+            if (playerBoard[colIndex][rowIndex] === 1) {
+                playerBoard[colIndex][rowIndex] = 'x'
                 console.log("hit")
-                console.log('row', rowIndex, '/col', colIndex)
+                console.log('col', colIndex, '/row', rowIndex)
                 console.log(playerBoard)
             } else {
-                playerBoard[rowIndex][colIndex] = 'o'
+                playerBoard[colIndex][rowIndex] = 'o'
                 console.log("miss")
-                console.log('row', rowIndex, '/col', colIndex)
+                console.log('col', colIndex, '/row', rowIndex)
                 console.log(playerBoard)
             }
             setTurn("YOUR")
@@ -200,7 +211,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
     return (
         <div className="">
-            <h2 id="pepe">Hello</h2>
+            <h2>Hello</h2>
             <h3>Give me your coordinates</h3>
             <div className="all-boards">
                 <div>
