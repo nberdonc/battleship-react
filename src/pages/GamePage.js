@@ -41,7 +41,6 @@ const GamePage = ({ shipList, setShipList }) => {
     //Player: place coordinates on player board
     let placeShips = (coord, data, e) => {
         const newShipList = shipList.filter(ship => ship.name !== data.name)//delete ship droped from shipList
-        console.log("id", e.target.id)
         let row = parseInt(coord[0])
         let col = parseInt(coord[2]) // todo arreglar id
 
@@ -54,8 +53,8 @@ const GamePage = ({ shipList, setShipList }) => {
         }
 
         if (data.size === "2" && col <= 8) {
-            playerBoard[row][col] = 1
-            playerBoard[row][col + 1] = 1
+            playerBoard[row][col] = 2
+            playerBoard[row][col + 1] = 2
             e.target.classList.add("shipdropedColor");//to add new style to our target
             document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
             console.log("PlayerBoard", playerBoard)
@@ -64,26 +63,20 @@ const GamePage = ({ shipList, setShipList }) => {
         else { console.log(data.size) }
 
         if (data.size === "3" && col <= 7) {
-            playerBoard[row][col] = 1
-            playerBoard[row][col + 1] = 1
-            playerBoard[row][col + 2] = 1
-            e.target.classList.add("shipdropedColor");//to add new style to our target
-            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
-            document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
+            for (let i = 0; i <= 2; i++) {
+                playerBoard[row][col + i] = 3
+                document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
+            }
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
         else { console.log(data.size) }
 
         if (data.size === "4" && col <= 6) {
-            playerBoard[row][col] = 1
-            playerBoard[row][col + 1] = 1
-            playerBoard[row][col + 2] = 1
-            playerBoard[row][col + 3] = 1
-            e.target.classList.add("shipdropedColor");//to add new style to our target
-            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
-            document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
-            document.getElementById(`${row},${col + 3}`).classList.add("shipdropedColor");
+            for (let i = 0; i <= 3; i++) {
+                playerBoard[row][col + i] = 4
+                document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
+            }
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
@@ -91,11 +84,11 @@ const GamePage = ({ shipList, setShipList }) => {
 
         if (data.size === "5" && col <= 5) {
             console.log(data.size)
-            playerBoard[row][col] = 1
-            playerBoard[row][col + 1] = 1
-            playerBoard[row][col + 2] = 1
-            playerBoard[row][col + 3] = 1
-            playerBoard[row][col + 4] = 1
+            playerBoard[row][col] = 5
+            playerBoard[row][col + 1] = 5
+            playerBoard[row][col + 2] = 5
+            playerBoard[row][col + 3] = 5
+            playerBoard[row][col + 4] = 5
             e.target.classList.add("shipdropedColor");//to add new style to our target
             document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
             document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
@@ -109,9 +102,8 @@ const GamePage = ({ shipList, setShipList }) => {
         }
 
         placeShipsRandomly(data.size) //on PC's board
-        console.log("PlayerBoard", playerBoard)
-        console.log("row& col", row + 1, col)
-        console.log("data", data)
+        console.log("size to pass", data.size)
+        console.log("row& col", row, col)
     };
 
     //PC: Place random coordinates on PC's board
@@ -123,39 +115,95 @@ const GamePage = ({ shipList, setShipList }) => {
 
         if (size === "1") {
             PcBoard[rowEnemy - 1][colEnemy - 1] = 1
+            console.log("PcBoard", PcBoard)
+            return
         }
-        else if (data.size === "2") {
-            console.log("roenemy", rowEnemy)
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-            PcBoard[rowEnemy - 1][colEnemy] = 1
+        if (data.size === "2" &&
+            PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy] === 0) {
+
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 2
+            PcBoard[rowEnemy - 1][colEnemy] = 2
+            console.log("PcBoard", PcBoard)
+            return
         }
-        else if (data.size === "3") {
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-            PcBoard[rowEnemy - 1][colEnemy] = 1
-            PcBoard[rowEnemy - 1][colEnemy + 1] = 1
+        else {
+            getRandomCoordinates(size)
         }
-        else if (data.size === "4") {
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-            PcBoard[rowEnemy - 1][colEnemy] = 1
-            PcBoard[rowEnemy - 1][colEnemy + 1] = 1
-            PcBoard[rowEnemy - 1][colEnemy + 2] = 1
+        if (data.size === "3" &&
+            PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy + 1] === 0) {
+
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 3
+            PcBoard[rowEnemy - 1][colEnemy] = 3
+            PcBoard[rowEnemy - 1][colEnemy + 1] = 3
+            console.log("PcBoard", PcBoard)
+            return
         }
-        else if (data.size === "5") {
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 1
-            PcBoard[rowEnemy - 1][colEnemy] = 1
-            PcBoard[rowEnemy - 1][colEnemy + 1] = 1
-            PcBoard[rowEnemy - 1][colEnemy + 2] = 1
-            PcBoard[rowEnemy - 1][colEnemy + 3] = 1
+        else {
+            getRandomCoordinates(size)
+        }
+        if (data.size === "4" &&
+            PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy + 1] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy + 2] === 0) {
+
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 4
+            PcBoard[rowEnemy - 1][colEnemy] = 4
+            PcBoard[rowEnemy - 1][colEnemy + 1] = 4
+            PcBoard[rowEnemy - 1][colEnemy + 2] = 4
+            console.log("PcBoard", PcBoard)
+            return
+        }
+        else {
+            getRandomCoordinates(size)
+        }
+        if (data.size === "5" &&
+            PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy + 1] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy + 2] === 0 &&
+            PcBoard[rowEnemy - 1][colEnemy + 3] === 0) {
+
+            PcBoard[rowEnemy - 1][colEnemy - 1] = 5
+            PcBoard[rowEnemy - 1][colEnemy] = 5
+            PcBoard[rowEnemy - 1][colEnemy + 1] = 5
+            PcBoard[rowEnemy - 1][colEnemy + 2] = 5
+            PcBoard[rowEnemy - 1][colEnemy + 3] = 5
+            console.log("PcBoard", PcBoard)
+            return
+        }
+        else {
+            getRandomCoordinates(size)
         }
 
-        console.log("PcBoard", PcBoard)
     };
 
     //PC: Random coordinates for PC's board
     const getRandomCoordinates = (size) => {
-        rowEnemy = Math.floor(Math.random() * (10 - size + 1));
-        colEnemy = Math.floor(Math.random() * 10);
-        console.log("row&colenemy", rowEnemy, colEnemy)
+        rowEnemy = Math.floor(Math.random() * 10) + 1;
+        if (size === "1") {
+            colEnemy = Math.floor(Math.random() * 10) + 1;
+            console.log("row&colenemy", rowEnemy, colEnemy)
+        }
+        else if (size === "2") {
+            colEnemy = Math.floor(Math.random() * 9) + 1;
+            console.log("row&colenemy", rowEnemy, colEnemy)
+        }
+        else if (size === "3") {
+            colEnemy = Math.floor(Math.random() * 8) + 1;
+            console.log("row&colenemy", rowEnemy, colEnemy)
+        }
+        else if (size === "4") {
+            colEnemy = Math.floor(Math.random() * 7) + 1;
+            console.log("row&colenemy", rowEnemy, colEnemy)
+        }
+        else if (size === "5") {
+            colEnemy = Math.floor(Math.random() * 6) + 1;
+            console.log("row&colenemy", rowEnemy, colEnemy)
+        }
     };
 
     //PC: Random direction for PC's ships 0 horizontal 1 vertical
@@ -174,18 +222,21 @@ const GamePage = ({ shipList, setShipList }) => {
     //Player: shoots to coordinates on PC's board
     let recieveShootPc = (rowIndex, colIndex, e) => {
         if (startGame === "on") {
-            if (PcBoard[colIndex][rowIndex] === 1) {
+            if (PcBoard[colIndex][rowIndex] === 1 || 2 || 3 || 4 || 5) {
                 PcBoard[colIndex][rowIndex] = 'x'
                 console.log("hit")
                 console.log('row', colIndex)
                 console.log('col', rowIndex)
                 console.log(PcBoard)
-            } else {
+            } else if (PcBoard[colIndex][rowIndex] === 0) {
                 PcBoard[colIndex][rowIndex] = 'o'
                 console.log("miss")
                 console.log('row', colIndex)
                 console.log('col', rowIndex)
                 console.log(PcBoard)
+            }
+            else if (PcBoard[colIndex][rowIndex] === 'x' || 'o') {
+                console.log("not allowed")
             }
             setTurn("PC's")
         }
