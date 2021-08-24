@@ -13,12 +13,16 @@ const GamePage = ({ shipList, setShipList }) => {
     let cols = 10;
     let rows = 10;
 
-
     //initialize just once
     useEffect(() => {
         setPlayerBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0))); //setting 2d array 10x10
         setPcBoard(new Array(cols).fill(0).map(() => new Array(rows).fill(0)));//setting 2d array 10x10
     }, [])
+
+
+    //PC: Place random coordinates on PC's board
+    let rowEnemy = 0
+    let colEnemy = 0
 
     //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
     let dragOver = (e) => {
@@ -35,7 +39,6 @@ const GamePage = ({ shipList, setShipList }) => {
         }
 
         placeShips(coord, data, e)
-        console.log(coord)
     }
 
     //Player: place coordinates on player board
@@ -83,18 +86,14 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
-
-
-        placeShipsRandomly(data.size) //on PC's board
-        console.log("size to pass", data.size)
+        getRandomCoordinates(data.size)
+        placeShipsRandomly(data.size)
         console.log("row& col", row, col)
     };
 
-    //PC: Place random coordinates on PC's board
-    let rowEnemy = 0
-    let colEnemy = 0
     const placeShipsRandomly = (size) => {
         let direction = generateRandomDirection()
+        console.log("direction", direction)
         getRandomCoordinates(size)
 
         if (size === "1") {
@@ -102,42 +101,39 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("PcBoard", PcBoard)
             return
         }
-        if (data.size === "2" &&
+        if (data.size === "2" && colEnemy <= 9 &&
             PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy] === 0) {
-
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 2
-            PcBoard[rowEnemy - 1][colEnemy] = 2
+            for (let i = -1; i <= 0; i++) {
+                PcBoard[rowEnemy - 1][colEnemy + i] = 2
+            }
             console.log("PcBoard", PcBoard)
             return
         }
         else {
             getRandomCoordinates(size)
         }
-        if (data.size === "3" &&
+        if (data.size === "3" && colEnemy <= 8 &&
             PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy + 1] === 0) {
-
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 3
-            PcBoard[rowEnemy - 1][colEnemy] = 3
-            PcBoard[rowEnemy - 1][colEnemy + 1] = 3
+            for (let i = -1; i <= 1; i++) {
+                PcBoard[rowEnemy - 1][colEnemy + i] = 3
+            }
             console.log("PcBoard", PcBoard)
             return
         }
         else {
             getRandomCoordinates(size)
         }
-        if (data.size === "4" &&
+        if (data.size === "4" && colEnemy <= 7 &&
             PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy + 1] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy + 2] === 0) {
-
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 4
-            PcBoard[rowEnemy - 1][colEnemy] = 4
-            PcBoard[rowEnemy - 1][colEnemy + 1] = 4
-            PcBoard[rowEnemy - 1][colEnemy + 2] = 4
+            for (let i = -1; i <= 2; i++) {
+                PcBoard[rowEnemy - 1][colEnemy + i] = 4
+            }
             console.log("PcBoard", PcBoard)
             return
         }
@@ -145,25 +141,113 @@ const GamePage = ({ shipList, setShipList }) => {
             getRandomCoordinates(size)
         }
         if (data.size === "5" &&
+
+            colEnemy <= 6 &&
             PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy + 1] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy + 2] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy + 3] === 0) {
-
-            PcBoard[rowEnemy - 1][colEnemy - 1] = 5
-            PcBoard[rowEnemy - 1][colEnemy] = 5
-            PcBoard[rowEnemy - 1][colEnemy + 1] = 5
-            PcBoard[rowEnemy - 1][colEnemy + 2] = 5
-            PcBoard[rowEnemy - 1][colEnemy + 3] = 5
+            for (let i = -1; i <= 3; i++) {
+                PcBoard[rowEnemy - 1][colEnemy + i] = 5
+            }
             console.log("PcBoard", PcBoard)
             return
         }
         else {
             getRandomCoordinates(size)
         }
-
     };
+    ///////////////////////////////////
+    // const validateShipPosition = (row, col, size, board) => {
+    //     console.log("row", row)
+    //     console.log("col", col)
+    //     console.log("size", size)
+    //     console.log("board", board)
+    //     for (let i = col - 1; i < size; i++) {
+    //         if (board[row - 1][i] === 0 && col <= 10 - size) {
+    //             return
+    //         }
+    //     }
+    // }
+
+    // const placeShipsRandomly = (size) => {
+    //     let direction = generateRandomDirection()
+    //     console.log("direction", direction)
+    //     console.log("size parsed", parseInt(size))
+
+    //     for (let i = colEnemy - 1; i < size - 1; i++) {
+    //         if (validateShipPosition) {
+    //             PcBoard[rowEnemy - 1][colEnemy - 1] = size
+    //         } else {
+    //             getRandomCoordinates(size)
+    //         }
+    //     }
+
+    //     console.log("PcBoard", PcBoard)
+    ////////////////////////////////
+    // if (size === "1") {
+    //     PcBoard[rowEnemy - 1][colEnemy - 1] = 1
+    //     console.log("PcBoard", PcBoard)
+    //     return
+    // }
+    // if (size === "2" && colEnemy <= 9 &&
+    //     PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy] === 0) {
+    //     for (let i = -1; i <= 0; i++) {
+    //         PcBoard[rowEnemy - 1][colEnemy + i] = 2
+    //     }
+    //     console.log("PcBoard", PcBoard)
+    //     return
+    // }
+    // else {
+    //     getRandomCoordinates(size)
+    // }
+    // if (size === "3" && colEnemy <= 8 &&
+    //     PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy + 1] === 0) {
+    //     for (let i = -1; i <= 1; i++) {
+    //         PcBoard[rowEnemy - 1][colEnemy + i] = 3
+    //     }
+    //     console.log("PcBoard", PcBoard)
+    //     return
+    // }
+    // else {
+    //     getRandomCoordinates(size)
+    // }
+    // if (size === "4" && colEnemy <= 7 &&
+    //     PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy + 1] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy + 2] === 0) {
+    //     for (let i = -1; i <= 2; i++) {
+    //         PcBoard[rowEnemy - 1][colEnemy + i] = 4
+    //     }
+    //     console.log("PcBoard", PcBoard)
+    //     return
+    // }
+    // else {
+    //     getRandomCoordinates(size)
+    // }
+    // if (size === "5" &&
+
+    //     colEnemy <= 6 &&
+    //     PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy + 1] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy + 2] === 0 &&
+    //     PcBoard[rowEnemy - 1][colEnemy + 3] === 0) {
+    //     for (let i = -1; i <= 3; i++) {
+    //         PcBoard[rowEnemy - 1][colEnemy + i] = 5
+    //     }
+    //     console.log("PcBoard", PcBoard)
+    //     return
+    // }
+    // else {
+    //     getRandomCoordinates(size)
+    // }
+    //};
 
     //PC: Random coordinates for PC's board
     const getRandomCoordinates = (size) => {
@@ -188,11 +272,12 @@ const GamePage = ({ shipList, setShipList }) => {
             colEnemy = Math.floor(Math.random() * 6) + 1;
             console.log("row&colenemy", rowEnemy, colEnemy)
         }
+        // validateShipPosition(rowEnemy, colEnemy, size, PcBoard) //on PC's board
     };
 
     //PC: Random direction for PC's ships 0 horizontal 1 vertical
     const generateRandomDirection = () => {
-        return Math.floor(Math.random() * 2) + 0
+        return Math.random() < 0.5
     }
 
     //Start Game Function
