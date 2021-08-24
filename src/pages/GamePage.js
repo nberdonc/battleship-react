@@ -51,17 +51,14 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
-
         if (data.size === "2" && col <= 8) {
-            playerBoard[row][col] = 2
-            playerBoard[row][col + 1] = 2
-            e.target.classList.add("shipdropedColor");//to add new style to our target
-            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
+            for (let i = 0; i <= 1; i++) {
+                playerBoard[row][col + i] = 2
+                document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
+            }
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
-        else { console.log(data.size) }
-
         if (data.size === "3" && col <= 7) {
             for (let i = 0; i <= 2; i++) {
                 playerBoard[row][col + i] = 3
@@ -70,8 +67,6 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
-        else { console.log(data.size) }
-
         if (data.size === "4" && col <= 6) {
             for (let i = 0; i <= 3; i++) {
                 playerBoard[row][col + i] = 4
@@ -80,26 +75,15 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
-        else { console.log(data.size) }
-
         if (data.size === "5" && col <= 5) {
-            console.log(data.size)
-            playerBoard[row][col] = 5
-            playerBoard[row][col + 1] = 5
-            playerBoard[row][col + 2] = 5
-            playerBoard[row][col + 3] = 5
-            playerBoard[row][col + 4] = 5
-            e.target.classList.add("shipdropedColor");//to add new style to our target
-            document.getElementById(`${row},${col + 1}`).classList.add("shipdropedColor");
-            document.getElementById(`${row},${col + 2}`).classList.add("shipdropedColor");
-            document.getElementById(`${row},${col + 3}`).classList.add("shipdropedColor");
-            document.getElementById(`${row},${col + 4}`).classList.add("shipdropedColor");
+            for (let i = 0; i <= 4; i++) {
+                playerBoard[row][col + i] = 5
+                document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
+            }
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
-        else {
-            console.log(data.size)
-        }
+
 
         placeShipsRandomly(data.size) //on PC's board
         console.log("size to pass", data.size)
