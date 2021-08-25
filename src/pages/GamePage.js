@@ -23,6 +23,7 @@ const GamePage = ({ shipList, setShipList }) => {
     //PC: Place random coordinates on PC's board
     let rowEnemy = 0
     let colEnemy = 0
+    let direction = false
 
     //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
     let dragOver = (e) => {
@@ -86,15 +87,27 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
         }
-        getRandomCoordinates(data.size)
-        placeShipsRandomly(data.size)
+        generateRandomDirection(data.size)
         console.log("row& col", row, col)
     };
 
-    const placeShipsRandomly = (size) => {
-        let direction = generateRandomDirection()
-        console.log("direction", direction)
+    //PC: Random direction for PC's ships 0 horizontal 1 vertical
+    const generateRandomDirection = (size) => {
+        direction = Math.random() < 0.5
         getRandomCoordinates(size)
+    }
+
+    //PC: Random coordinates for PC's board
+    const getRandomCoordinates = (size) => {
+        rowEnemy = Math.floor(Math.random() * 10) + 1;
+        colEnemy = Math.floor(Math.random() * (11 - parseInt(size))) + 1;
+        console.log("row&colenemy", rowEnemy, colEnemy)
+        // validateShipPosition(rowEnemy, colEnemy, size, PcBoard) //on PC's board
+
+        placeShipsRandomly(size) //trigger this after validation ok
+    };
+
+    const placeShipsRandomly = (size) => {
 
         if (size === "1") {
             PcBoard[rowEnemy - 1][colEnemy - 1] = 1
@@ -111,9 +124,9 @@ const GamePage = ({ shipList, setShipList }) => {
             return
         }
         else {
-            getRandomCoordinates(size)
+            generateRandomDirection(size)
         }
-        if (data.size === "3" && colEnemy <= 8 &&
+        if (data.size === "3" && colEnemy <= 8 && //infinite loop!!!!!
             PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy] === 0 &&
             PcBoard[rowEnemy - 1][colEnemy + 1] === 0) {
@@ -124,7 +137,7 @@ const GamePage = ({ shipList, setShipList }) => {
             return
         }
         else {
-            getRandomCoordinates(size)
+            generateRandomDirection(size)
         }
         if (data.size === "4" && colEnemy <= 7 &&
             PcBoard[rowEnemy - 1][colEnemy - 1] === 0 &&
@@ -138,7 +151,7 @@ const GamePage = ({ shipList, setShipList }) => {
             return
         }
         else {
-            getRandomCoordinates(size)
+            generateRandomDirection(size)
         }
         if (data.size === "5" &&
 
@@ -155,7 +168,7 @@ const GamePage = ({ shipList, setShipList }) => {
             return
         }
         else {
-            getRandomCoordinates(size)
+            generateRandomDirection(size)
         }
     };
     ///////////////////////////////////
@@ -249,36 +262,6 @@ const GamePage = ({ shipList, setShipList }) => {
     // }
     //};
 
-    //PC: Random coordinates for PC's board
-    const getRandomCoordinates = (size) => {
-        rowEnemy = Math.floor(Math.random() * 10) + 1;
-        if (size === "1") {
-            colEnemy = Math.floor(Math.random() * 10) + 1;
-            console.log("row&colenemy", rowEnemy, colEnemy)
-        }
-        else if (size === "2") {
-            colEnemy = Math.floor(Math.random() * 9) + 1;
-            console.log("row&colenemy", rowEnemy, colEnemy)
-        }
-        else if (size === "3") {
-            colEnemy = Math.floor(Math.random() * 8) + 1;
-            console.log("row&colenemy", rowEnemy, colEnemy)
-        }
-        else if (size === "4") {
-            colEnemy = Math.floor(Math.random() * 7) + 1;
-            console.log("row&colenemy", rowEnemy, colEnemy)
-        }
-        else if (size === "5") {
-            colEnemy = Math.floor(Math.random() * 6) + 1;
-            console.log("row&colenemy", rowEnemy, colEnemy)
-        }
-        // validateShipPosition(rowEnemy, colEnemy, size, PcBoard) //on PC's board
-    };
-
-    //PC: Random direction for PC's ships 0 horizontal 1 vertical
-    const generateRandomDirection = () => {
-        return Math.random() < 0.5
-    }
 
     //Start Game Function
     let startGameBtn = (e) => {
