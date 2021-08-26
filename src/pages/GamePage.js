@@ -48,46 +48,15 @@ const GamePage = ({ shipList, setShipList }) => {
         let row = parseInt(coord[0])
         let col = parseInt(coord[2]) // todo arreglar id
 
-
-        if (data.size === "1") {
-            playerBoard[row][col] = 1
-            e.target.classList.add("shipdropedColor");//to add new style to our target
-            console.log("PlayerBoard", playerBoard)
-            setShipList(newShipList)
-        }
-        if (data.size === "2" && col <= 8) {
-            for (let i = 0; i <= 1; i++) {
-                playerBoard[row][col + i] = 2
+        if (col < (10 - parseInt(data.size))) {
+            for (let i = 0; i < parseInt(data.size); i++) {
+                playerBoard[row][col + i] = parseInt(data.size)
                 document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
             }
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
+            generateRandomDirection(data.size)
         }
-        if (data.size === "3" && col <= 7) {
-            for (let i = 0; i <= 2; i++) {
-                playerBoard[row][col + i] = 3
-                document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
-            }
-            console.log("PlayerBoard", playerBoard)
-            setShipList(newShipList)
-        }
-        if (data.size === "4" && col <= 6) {
-            for (let i = 0; i <= 3; i++) {
-                playerBoard[row][col + i] = 4
-                document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
-            }
-            console.log("PlayerBoard", playerBoard)
-            setShipList(newShipList)
-        }
-        if (data.size === "5" && col <= 5) {
-            for (let i = 0; i <= 4; i++) {
-                playerBoard[row][col + i] = 5
-                document.getElementById(`${row},${col + i}`).classList.add("shipdropedColor");
-            }
-            console.log("PlayerBoard", playerBoard)
-            setShipList(newShipList)
-        }
-        generateRandomDirection(data.size)
         console.log("row& col", row, col)
     };
 
@@ -102,12 +71,42 @@ const GamePage = ({ shipList, setShipList }) => {
         rowEnemy = Math.floor(Math.random() * 10) + 1;
         colEnemy = Math.floor(Math.random() * (11 - parseInt(size))) + 1;
         console.log("row&colenemy", rowEnemy, colEnemy)
-        // validateShipPosition(rowEnemy, colEnemy, size, PcBoard) //on PC's board
+        let validated = validateShipPosition(rowEnemy, colEnemy, size, PcBoard) //on PC's board
 
-        placeShipsRandomly(size) //trigger this after validation ok
+        if (validated) {
+            placeShipsRandomly(size) //trigger this after validation ok  
+        }
+        else (generateRandomDirection(size))
     };
 
+
+    const validateShipPosition = async (row, col, size, board) => {
+        console.log("row", row)
+        console.log("col", col)
+        console.log("size", size)
+        console.log("board", board)
+        for (let i = col - 1; i < parseInt(size); i++) {
+            if (board[row - 1][i] === 0 && col <= 11 - parseInt(size)) {
+                return
+            }
+            else {
+                console.log("generate again")
+                generateRandomDirection(size)
+            }
+        }
+    }
+
+
     const placeShipsRandomly = (size) => {
+
+        // for (let i = -1; i <= 0; i++) {
+        //     PcBoard[rowEnemy - 1][colEnemy + i] = parseInt(size)
+        // }
+        // console.log("PcBoard", PcBoard)
+        // return
+
+
+
 
         if (size === "1") {
             PcBoard[rowEnemy - 1][colEnemy - 1] = 1
@@ -172,17 +171,7 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     };
     ///////////////////////////////////
-    // const validateShipPosition = (row, col, size, board) => {
-    //     console.log("row", row)
-    //     console.log("col", col)
-    //     console.log("size", size)
-    //     console.log("board", board)
-    //     for (let i = col - 1; i < size; i++) {
-    //         if (board[row - 1][i] === 0 && col <= 10 - size) {
-    //             return
-    //         }
-    //     }
-    // }
+
 
     // const placeShipsRandomly = (size) => {
     //     let direction = generateRandomDirection()
