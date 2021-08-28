@@ -9,9 +9,13 @@ const GamePage = ({ shipList, setShipList }) => {
     const [startGame, setStartGame] = useState("off")
     const [turn, setTurn] = useState("")
 
-    //Grid rows & cols
     let BOARD_COLS = 10;
     let BOARD_ROWS = 10;
+
+    let PC_ROW_IDX = 0
+    let PC_COL_IDX = 0
+    let direction = false
+    let SHIP_DATA = []
 
     //initialize just once
     useEffect(() => {
@@ -19,17 +23,11 @@ const GamePage = ({ shipList, setShipList }) => {
         setPcBoard(new Array(BOARD_COLS).fill(0).map(() => new Array(BOARD_ROWS).fill(0)));//setting 2d array 10x10
     }, [])
 
-    //PC: Place random coordinates on PC's board
-    let PC_ROW_IDX = 0
-    let PC_COL_IDX = 0
-    let direction = false
-
     //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
     let dragOver = (e) => {
         e.preventDefault();
     }
 
-    let SHIP_DATA = []
     let drop = (e) => {
         e.preventDefault();
         SHIP_DATA = JSON.parse(e.dataTransfer.getData("ship"));
@@ -44,7 +42,6 @@ const GamePage = ({ shipList, setShipList }) => {
     //Player: place coordinates on player board
     let placeShips = (DROP_COORD, SHIP_DATA, e) => {
         const newShipList = shipList.filter(ship => ship.name !== SHIP_DATA.name)//delete ship droped from shipList
-        console.log("ID", DROP_COORD)
         let DROP_ROW = parseInt(DROP_COORD[0])
         let DROP_COL = parseInt(DROP_COORD[2]) // todo arreglar id
         let SHIP_SIZE = parseInt(SHIP_DATA.size)
@@ -57,8 +54,8 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("PlayerBoard row& col", DROP_ROW, DROP_COL)
             console.log("PlayerBoard", playerBoard)
             setShipList(newShipList)
-            //generateRandomDirection(data.size)
-            getRandomCoordinates(SHIP_DATA.size)
+            generateRandomDirection(data.size)
+            //getRandomCoordinates(SHIP_DATA.size)
         }
     };
 
@@ -82,9 +79,9 @@ const GamePage = ({ shipList, setShipList }) => {
         }
         else {
             console.log("not validated")
-            getRandomCoordinates(SHIP_SIZE)
+            generateRandomDirection(SHIP_SIZE)
+            //getRandomCoordinates(SHIP_SIZE)
         }
-
     };
 
     const validateShipPosition = (row, col, SHIP_SIZE, board) => {
@@ -97,170 +94,13 @@ const GamePage = ({ shipList, setShipList }) => {
         return true
     }
 
-
     const placeShipsRandomly = (SHIP_SIZE) => {
-
         for (let i = 0; i < parseInt(SHIP_SIZE); i++) {
             PcBoard[PC_ROW_IDX][PC_COL_IDX + i] = parseInt(SHIP_SIZE)
         }
         console.log("PcBoard", PcBoard)
         return
-
-
-        /*   if (size === "1") {
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] = 1
-               console.log("PcBoard", PcBoard)
-               return
-           }
-   
-           if (size === "2" && PC_COL_IDX <= 9 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0) {
-   
-               for (let i = -1; i <= 0; i++) {
-                   PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 2
-               }
-               console.log("PcBoard", PcBoard)
-               return
-           }
-           else {
-               getRandomCoordinates(size)
-           }
-   
-   
-           if (size === "3" && PC_COL_IDX <= 8 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 1] === 0) {
-   
-               for (let i = -1; i <= 1; i++) {
-                   PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 3
-               }
-               console.log("PcBoard", PcBoard)
-               return
-           }
-           else {
-               console.log("NO HA PASSAT EL FILTRE 3")
-               console.log("entra en loop", size)
-               console.log("PcBoard", PcBoard)
-               getRandomCoordinates(size)
-           }
-   
-   
-   
-           if (size === "4" && PC_COL_IDX <= 7 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 1] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 2] === 0) {
-               for (let i = -1; i <= 2; i++) {
-                   PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 4
-               }
-               console.log("PcBoard", PcBoard)
-               return
-           }
-           else {
-               console.log("NO HA PASSAT EL FILTRE 4")
-               getRandomCoordinates(size)
-           }
-           if (size === "5" && PC_COL_IDX <= 6 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 1] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 2] === 0 &&
-               PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 3] === 0) {
-               for (let i = -1; i <= 3; i++) {
-                   PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 5
-               }
-               console.log("PcBoard", PcBoard)
-               return
-           }
-           else {
-               console.log("NO HA PASSAT EL FILTRE 5")
-               getRandomCoordinates(size)
-           }*/
     };
-    ///////////////////////////////////
-
-
-    // const placeShipsRandomly = (size) => {
-    //     let direction = generateRandomDirection()
-    //     console.log("direction", direction)
-    //     console.log("size parsed", parseInt(size))
-
-    //     for (let i = PC_COL_IDX - 1; i < size - 1; i++) {
-    //         if (validateShipPosition) {
-    //             PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] = size
-    //         } else {
-    //             getRandomCoordinates(size)
-    //         }
-    //     }
-
-    //     console.log("PcBoard", PcBoard)
-    ////////////////////////////////
-    // if (size === "1") {
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] = 1
-    //     console.log("PcBoard", PcBoard)
-    //     return
-    // }
-    // if (size === "2" && PC_COL_IDX <= 9 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0) {
-    //     for (let i = -1; i <= 0; i++) {
-    //         PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 2
-    //     }
-    //     console.log("PcBoard", PcBoard)
-    //     return
-    // }
-    // else {
-    //     getRandomCoordinates(size)
-    // }
-    // if (size === "3" && PC_COL_IDX <= 8 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 1] === 0) {
-    //     for (let i = -1; i <= 1; i++) {
-    //         PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 3
-    //     }
-    //     console.log("PcBoard", PcBoard)
-    //     return
-    // }
-    // else {
-    //     getRandomCoordinates(size)
-    // }
-    // if (size === "4" && PC_COL_IDX <= 7 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 1] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 2] === 0) {
-    //     for (let i = -1; i <= 2; i++) {
-    //         PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 4
-    //     }
-    //     console.log("PcBoard", PcBoard)
-    //     return
-    // }
-    // else {
-    //     getRandomCoordinates(size)
-    // }
-    // if (size === "5" &&
-
-    //     PC_COL_IDX <= 6 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX - 1] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 1] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 2] === 0 &&
-    //     PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + 3] === 0) {
-    //     for (let i = -1; i <= 3; i++) {
-    //         PcBoard[PC_ROW_IDX - 1][PC_COL_IDX + i] = 5
-    //     }
-    //     console.log("PcBoard", PcBoard)
-    //     return
-    // }
-    // else {
-    //     getRandomCoordinates(size)
-    // }
-    //};
-
 
     //Start Game Function
     let startGameBtn = (e) => {
