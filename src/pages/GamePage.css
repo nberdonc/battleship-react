@@ -45,58 +45,46 @@
     margin:10px;
 }
 
-.cruiser-container:hover{
-    background-color: rgb(65, 201, 144);
-}
-
 .destroyer-container{
     width: 80px; 
     height: 40px;
-    background-color: rgb(166, 176, 223);
+    background-color: rgb(166, 223, 178);
     display: flex;
     margin:10px;
-}
-
-.destroyer-container:hover{
-    background-color: rgb(126, 142, 218);
 }
 
 .submarine-container{
     width: 120px; 
     height: 40px;
-    background-color: rgb(212, 166, 223);
+    background-color: rgb(166, 223, 178);
     display: flex;
     margin:10px;
-}
-
-.submarine-container:hover{
-    background-color: rgb(194, 83, 209);
 }
 
 .battleship-container{
     width: 160px; 
     height: 40px;
-    background-color: rgb(176, 196, 103);
+    background-color: rgb(166, 223, 178);
     display: flex;
     margin:10px;
-}
-
-.battleship-container:hover{
-    background-color: rgb(197, 195, 57);
 }
 
 .carrier-container{
     width: 200px; 
     height: 40px;
-    background-color: rgb(190, 151, 119);
+    background-color: rgb(166, 223, 178);
     display: flex;
     margin:10px;
 }
 
+.cruiser-container:hover,
+.destroyer-container:hover,
+.submarine-container:hover,
+.battleship-container:hover,
 .carrier-container:hover{
-    background-color: rgb(211, 182, 52);
+    background-color: rgb(65, 201, 144);
 }
 
 .shipdropedColor{
-    background-color: rgb(119, 190, 128);
+    background-color: rgb(166, 223, 178);
 }

@@ -14,7 +14,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
     let PcRowIdx = 0
     let PcColIdx = 0
-    let direction = true
+    let rotated = false
     let ShipData = []
     let validated = false
     //initialize just once
@@ -44,33 +44,37 @@ const GamePage = ({ shipList, setShipList }) => {
         let DropRowIdx = parseInt(DropCoord[0])
         let DropColIdx = parseInt(DropCoord[2]) // todo arreglar id
         let ShipSize = parseInt(ShipData.size)
-        console.log("shipdata", ShipData)
+        console.log("shipdata rotated", ShipData.rotated)
 
-        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard) //on PC's board
+        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, ShipData.rotated) //on PC's board
 
         if (validated) {
             for (let i = 0; i < ShipSize; i++) {
-                if (!direction) {
+                if (ShipData.rotated && DropRowIdx < (BOARD_COLS - ShipSize)) {
                     playerBoard[DropRowIdx + i][DropColIdx] = ShipSize
+                    console.log("PlayerBoard", playerBoard)
                     document.getElementById(`${DropRowIdx + i},${DropColIdx}`).classList.add("shipdropedColor");
+                    setShipList(newShipList)
+                    generateRandomDirection(ShipData.size)
                 }
-                else {
+                else if (!ShipData.rotated && DropColIdx < (BOARD_COLS - ShipSize)) {
                     playerBoard[DropRowIdx][DropColIdx + i] = ShipSize
+                    console.log("PlayerBoard", playerBoard)
                     document.getElementById(`${DropRowIdx},${DropColIdx + i}`).classList.add("shipdropedColor");
+                    setShipList(newShipList)
+                    generateRandomDirection(ShipData.size)
                 }
             }
             console.log("PlayerBoard row& col", DropRowIdx, DropColIdx)
             console.log("PlayerBoard", playerBoard)
-            setShipList(newShipList)
-            generateRandomDirection(ShipData.size)
         }
         else { console.log("not valid") }
     };
 
     //PC: Random direction for PC's ships 0 horizontal 1 vertical
     const generateRandomDirection = (ShipSize) => {
-        direction = Math.random() < 0.5
-        console.log("direction", direction)
+        rotated = Math.random() < 0.5
+        console.log("rotated", rotated)
         getRandomCoordinates(ShipSize)
     }
 
@@ -79,7 +83,7 @@ const GamePage = ({ shipList, setShipList }) => {
         let COORD1 = Math.floor(Math.random() * BOARD_ROWS);
         let COORD2 = Math.floor(Math.random() * (BOARD_ROWS - parseInt(ShipSize) - 1));
 
-        if (!direction) {
+        if (rotated) {
             PcRowIdx = COORD2
             PcColIdx = COORD1
         }
@@ -100,20 +104,11 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     };
 
-    const validateShipPosition = (row, col, ShipSize, board) => {
+    const validateShipPosition = (row, col, ShipSize, board, rotated) => {
         console.log("rowIDX&PcColIdx", row, col, "/size", ShipSize)
-        if (!direction) {
-            for (let i = row; i < row + parseInt(ShipSize); i++) {
-                if (board[i][col] !== 0 && row <= (BOARD_ROWS - parseInt(ShipSize))) {
-                    return false
-                }
-            }
-        }
-        else {
-            for (let i = col; i < col + parseInt(ShipSize); i++) {
-                if (board[row][i] !== 0 && col <= (BOARD_ROWS - parseInt(ShipSize))) {
-                    return false
-                }
+        for (let i = col; i < col + ShipSize; i++) {
+            if (board[row][i] !== 0 && col <= (BOARD_ROWS - parseInt(ShipSize))) {
+                return false
             }
         }
         return true
@@ -121,14 +116,14 @@ const GamePage = ({ shipList, setShipList }) => {
 
     const placeShipsRandomly = (ShipSize) => {
         for (let i = 0; i < parseInt(ShipSize); i++) {
-            if (!direction) {
+            if (rotated) {
                 PcBoard[PcRowIdx + i][PcColIdx] = parseInt(ShipSize)
             }
             else {
                 PcBoard[PcRowIdx][PcColIdx + i] = parseInt(ShipSize)
             }
         }
-        direction = true
+        rotated = false
         console.log("PcBoard", PcBoard)
         return
     };
