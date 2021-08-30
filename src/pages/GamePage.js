@@ -169,30 +169,63 @@ const GamePage = ({ shipList, setShipList }) => {
                 console.log("not allowed")
             }
             setTurn("PC's")
+            console.log(PcBoard)
+            recieveShootPlayer()
         }
     };
 
     //PC: shoots random to player's board
-    let recieveShootPlayer = (rowIndex, colIndex, e) => {
-        console.log("coord", playerBoard[rowIndex][colIndex])
+    // let recieveShootPlayer = (rowIndex, colIndex, e) => {
+    //     console.log("coord", playerBoard[rowIndex][colIndex])
+    //     if (startGame === "on") {
+    //         if (playerBoard[rowIndex][colIndex] === 0) {
+    //             playerBoard[rowIndex][colIndex] = 'o'
+    //             document.getElementById(`${rowIndex},${colIndex}`).classList.add("missShot");
+    //             console.log("miss")
+    //             console.log('row', rowIndex)
+    //             console.log('col', colIndex)
+    //             console.log(playerBoard)
+    //         }
+    //         else if (playerBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
+    //             playerBoard[rowIndex][colIndex] = 'x'
+    //             document.getElementById(`${rowIndex},${colIndex}`).classList.add("shipShotColor");
+    //             console.log("hit")
+    //             console.log('row', rowIndex)
+    //             console.log('col', colIndex)
+    //             console.log(playerBoard)
+    //         }
+    //         else if (playerBoard[rowIndex][colIndex] === 'x' || 'o') {
+    //             console.log("not allowed")
+    //         }
+    //         setTurn("YOUR")
+    //     }
+    // };
+
+    let recieveShootPlayer = () => {
+        //to create random shoot
+        PcRowIdx = Math.floor(Math.random() * BOARD_ROWS);
+        PcColIdx = Math.floor(Math.random() * BOARD_ROWS);
+
+
+        console.log("coord", playerBoard[PcRowIdx][PcColIdx])
         if (startGame === "on") {
-            if (playerBoard[rowIndex][colIndex] === 0) {
-                playerBoard[rowIndex][colIndex] = 'o'
-                document.getElementById(`${rowIndex},${colIndex}`).classList.add("missShot");
+            if (playerBoard[PcRowIdx][PcColIdx] === 0) {
+                playerBoard[PcRowIdx][PcColIdx] = 'o'
+                document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("missShot");
                 console.log("miss")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
+                console.log('row', PcRowIdx)
+                console.log('col', PcColIdx)
                 console.log(playerBoard)
             }
-            else if (playerBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
-                playerBoard[rowIndex][colIndex] = 'x'
-                document.getElementById(`${rowIndex},${colIndex}`).classList.add("shipShotColor");
+            else if (playerBoard[PcRowIdx][PcColIdx] === 1 || 2 || 3 || 4 || 5) {
+                playerBoard[PcRowIdx][PcColIdx] = 'x'
+                document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("shipShotColor");
                 console.log("hit")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
+                console.log('row', PcRowIdx)
+                console.log('col', PcColIdx)
                 console.log(playerBoard)
             }
-            else if (playerBoard[rowIndex][colIndex] === 'x' || 'o') {
+            else if (playerBoard[PcRowIdx][PcColIdx] === 'x' || 'o') {
                 console.log("not allowed")
             }
             setTurn("YOUR")
@@ -215,7 +248,7 @@ const GamePage = ({ shipList, setShipList }) => {
                                 {
                                     BOARD_ROWS.map((BOARD_COLS, rowIndex) => (
                                         <div key={rowIndex} className="square" id={[rowIndex, colIndex]}
-                                            onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}
+                                        //onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}
 
                                         ></div>
                                     ))}
