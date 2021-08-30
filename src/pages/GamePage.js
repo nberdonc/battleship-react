@@ -44,8 +44,10 @@ const GamePage = ({ shipList, setShipList }) => {
         let DropRowIdx = parseInt(DropCoord[0])
         let DropColIdx = parseInt(DropCoord[2]) // todo arreglar id
         let ShipSize = parseInt(ShipData.size)
+        rotated = ShipData.rotated
+        console.log("shipdata", ShipData)
 
-        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, ShipData.rotated) //on PC's board
+        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, rotated) //on PC's board
 
         if (validated) {
             console.log("player validated", validated)
@@ -54,7 +56,7 @@ const GamePage = ({ shipList, setShipList }) => {
                     playerBoard[DropRowIdx + i][DropColIdx] = ShipSize
                     document.getElementById(`${DropRowIdx + i},${DropColIdx}`).classList.add("shipdropedColor");
                 }
-                else {
+                else if (!ShipData.rotated) {
                     playerBoard[DropRowIdx][DropColIdx + i] = ShipSize
                     document.getElementById(`${DropRowIdx},${DropColIdx + i}`).classList.add("shipdropedColor");
                 }
@@ -77,7 +79,7 @@ const GamePage = ({ shipList, setShipList }) => {
     //PC: Random coordinates for PC's board
     const getRandomCoordinates = (ShipSize) => {
         let COORD1 = Math.floor(Math.random() * BOARD_ROWS);
-        let COORD2 = Math.floor(Math.random() * (BOARD_ROWS - parseInt(ShipSize) - 1));
+        let COORD2 = Math.floor(Math.random() * (BOARD_ROWS - ShipSize - 1));
 
         if (rotated) {
             PcRowIdx = COORD2
@@ -103,7 +105,7 @@ const GamePage = ({ shipList, setShipList }) => {
     const validateShipPosition = (row, col, ShipSize, board, rotated) => {
         if (!rotated) {
             for (let i = col; i < col + ShipSize; i++) {
-                if (board[row][i] !== 0 && col <= (BOARD_ROWS - parseInt(ShipSize))) {
+                if (board[row][i] !== 0 || col > BOARD_ROWS - ShipSize) {
                     return false
                 }
             }
@@ -111,7 +113,7 @@ const GamePage = ({ shipList, setShipList }) => {
         }
         else {
             for (let i = row; i < row + ShipSize; i++) {
-                if (board[i][col] !== 0 && row <= (BOARD_ROWS - parseInt(ShipSize))) {
+                if (board[i][col] !== 0 || row > BOARD_ROWS - ShipSize) {
                     return false
                 }
             }
@@ -120,12 +122,12 @@ const GamePage = ({ shipList, setShipList }) => {
     }
 
     const placeShipsRandomly = (ShipSize) => {
-        for (let i = 0; i < parseInt(ShipSize); i++) {
+        for (let i = 0; i < ShipSize; i++) {
             if (rotated) {
-                PcBoard[PcRowIdx + i][PcColIdx] = parseInt(ShipSize)
+                PcBoard[PcRowIdx + i][PcColIdx] = ShipSize
             }
             else {
-                PcBoard[PcRowIdx][PcColIdx + i] = parseInt(ShipSize)
+                PcBoard[PcRowIdx][PcColIdx + i] = ShipSize
             }
         }
         rotated = false

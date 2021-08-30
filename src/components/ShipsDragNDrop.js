@@ -20,6 +20,15 @@ export const ShipsDragNDrop = ({ shipList }) => {
     }
 
     const handleClick = (e) => {
+        // if (!rotated) {
+        //     e.target.parentNode.style.transform = "rotate(90deg)";
+        // } else {
+        //     e.target.parentNode.style.transform = "";
+        // }
+        // rotated = !rotated;
+
+
+
         if (!rotated) {
             document.querySelector(`.${e.target.className}`).style.transform = "rotate(90deg)";
         } else {
@@ -28,12 +37,7 @@ export const ShipsDragNDrop = ({ shipList }) => {
         rotated = !rotated;
     };
 
-    // if (!rotated) {
-    //     e.target.parentNode.style.transform = "rotate(90deg)";
-    // } else {
-    //     e.target.parentNode.style.transform = "";
-    // }
-    // rotated = !rotated;
+
 
     return (
         <div className="ships-container">
