@@ -46,7 +46,6 @@ const GamePage = ({ shipList, setShipList }) => {
         let DropColIdx = parseInt(DropCoord[2]) // todo arreglar id
         let ShipSize = parseInt(ShipData.size)
         rotated = ShipData.rotated
-        console.log("shipdata", ShipData)
 
         validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, rotated) //on PC's board
 
@@ -73,7 +72,6 @@ const GamePage = ({ shipList, setShipList }) => {
     //PC: Random direction for PC's ships 0 horizontal 1 vertical
     const generateRandomDirection = (ShipSize) => {
         rotated = Math.random() < 0.5
-        console.log("PC rotated", rotated)
         getRandomCoordinates(ShipSize)
     }
 
@@ -146,91 +144,72 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //Player: shoots to coordinates on PC's board
     let recieveShootPc = (rowIndex, colIndex, e) => {
-        console.log("idPc", e.target.id)
         let squareID = e.target.id
         if (startGame === "on") {
             if (PcBoard[rowIndex][colIndex] === 0) {
                 PcBoard[rowIndex][colIndex] = 'o'
                 document.getElementById(`${squareID}`).classList.add("missShot");
                 console.log("miss")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
-                console.log(PcBoard)
             }
             else if (PcBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
                 PcBoard[rowIndex][colIndex] = 'x'
                 document.getElementById(`${squareID}`).classList.add("shipShotColor");
                 console.log("hit")
-                console.log('row', rowIndex)
-                console.log('col', colIndex)
-                console.log(PcBoard)
+                countPcLeftShips(PcBoard[rowIndex][colIndex])
             }
             else if (PcBoard[rowIndex][colIndex] === 'x' || 'o') {
                 console.log("not allowed")
             }
-            setTurn("PC's")
             console.log(PcBoard)
-            recieveShootPlayer()
+            setTurn("PC's")
+            console.log("PCboard", PcBoard)
+            setTimeout(function () { recieveShootPlayer() }, 1000)
         }
     };
-
-    //PC: shoots random to player's board
-    // let recieveShootPlayer = (rowIndex, colIndex, e) => {
-    //     console.log("coord", playerBoard[rowIndex][colIndex])
-    //     if (startGame === "on") {
-    //         if (playerBoard[rowIndex][colIndex] === 0) {
-    //             playerBoard[rowIndex][colIndex] = 'o'
-    //             document.getElementById(`${rowIndex},${colIndex}`).classList.add("missShot");
-    //             console.log("miss")
-    //             console.log('row', rowIndex)
-    //             console.log('col', colIndex)
-    //             console.log(playerBoard)
-    //         }
-    //         else if (playerBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
-    //             playerBoard[rowIndex][colIndex] = 'x'
-    //             document.getElementById(`${rowIndex},${colIndex}`).classList.add("shipShotColor");
-    //             console.log("hit")
-    //             console.log('row', rowIndex)
-    //             console.log('col', colIndex)
-    //             console.log(playerBoard)
-    //         }
-    //         else if (playerBoard[rowIndex][colIndex] === 'x' || 'o') {
-    //             console.log("not allowed")
-    //         }
-    //         setTurn("YOUR")
-    //     }
-    // };
 
     let recieveShootPlayer = () => {
         //to create random shoot
         PcRowIdx = Math.floor(Math.random() * BOARD_ROWS);
         PcColIdx = Math.floor(Math.random() * BOARD_ROWS);
 
-
-        console.log("coord", playerBoard[PcRowIdx][PcColIdx])
         if (startGame === "on") {
             if (playerBoard[PcRowIdx][PcColIdx] === 0) {
                 playerBoard[PcRowIdx][PcColIdx] = 'o'
                 document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("missShot");
                 console.log("miss")
-                console.log('row', PcRowIdx)
-                console.log('col', PcColIdx)
-                console.log(playerBoard)
             }
             else if (playerBoard[PcRowIdx][PcColIdx] === 1 || 2 || 3 || 4 || 5) {
                 playerBoard[PcRowIdx][PcColIdx] = 'x'
                 document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("shipShotColor");
                 console.log("hit")
-                console.log('row', PcRowIdx)
-                console.log('col', PcColIdx)
-                console.log(playerBoard)
+                countPlayerLeftShips(playerBoard[PcRowIdx][PcColIdx])
             }
             else if (playerBoard[PcRowIdx][PcColIdx] === 'x' || 'o') {
                 console.log("not allowed")
             }
+            console.log("playerboard", playerBoard)
             setTurn("YOUR")
         }
     };
+
+    let countPlayerLeftShips = (PlayerShipNum) => {
+        let PlayerOneShip = 0
+        let PlayerTwoShip = 0
+        let PlayerThreeShip = 0
+        let PlayerFourShip = 0
+        let PlayerFiveShip = 0
+
+
+
+    }
+
+    let countPcLeftShips = (PcShipNum) => {
+        let PcOneShip = 0
+        let PcTwoShip = 0
+        let PcThreeShip = 0
+        let PcFourShip = 0
+        let PcFiveShip = 0
+    }
 
     return (
         <div className="">
@@ -248,8 +227,6 @@ const GamePage = ({ shipList, setShipList }) => {
                                 {
                                     BOARD_ROWS.map((BOARD_COLS, rowIndex) => (
                                         <div key={rowIndex} className="square" id={[rowIndex, colIndex]}
-                                        //onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}
-
                                         ></div>
                                     ))}
                             </div>

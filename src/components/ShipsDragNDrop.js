@@ -16,19 +16,9 @@ export const ShipsDragNDrop = ({ shipList }) => {
             name: e.target.name,
         });
         e.dataTransfer.setData("ship", data);
-        //console.log("/shipname:", e.target.name, "/shiplength:", e.target.value)
     }
 
     const handleClick = (e) => {
-        // if (!rotated) {
-        //     e.target.parentNode.style.transform = "rotate(90deg)";
-        // } else {
-        //     e.target.parentNode.style.transform = "";
-        // }
-        // rotated = !rotated;
-
-
-
         if (!rotated) {
             document.querySelector(`.${e.target.className}`).style.transform = "rotate(90deg)";
         } else {
