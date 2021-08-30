@@ -88,3 +88,23 @@
 .shipdropedColor{
     background-color: rgb(166, 223, 178);
 }
+
+.shipdropedColor:hover{
+    background-color: rgb(65, 201, 144);
+}
+
+.shipShotColor{
+    background-color: red;
+}
+
+.shipShotColor:hover{
+    background-color: rgb(188, 74, 74);
+}
+
+.missShot{
+    background-color: pink;
+}
+
+.missShot:hover{
+    background-color: rgb(219, 68, 199);
+}

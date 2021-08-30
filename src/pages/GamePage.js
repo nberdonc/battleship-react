@@ -14,6 +14,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
     let PcRowIdx = 0
     let PcColIdx = 0
+    let pcId = 0
     let rotated = false
     let ShipData = []
     let validated = false
@@ -145,21 +146,26 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //Player: shoots to coordinates on PC's board
     let recieveShootPc = (rowIndex, colIndex, e) => {
+        console.log("idPc", e.target.id)
+        let squareID = e.target.id
         if (startGame === "on") {
-            if (PcBoard[colIndex][rowIndex] === 1 || 2 || 3 || 4 || 5) {
-                PcBoard[colIndex][rowIndex] = 'x'
-                console.log("hit")
-                console.log('row', colIndex)
-                console.log('col', rowIndex)
-                console.log(PcBoard)
-            } else if (PcBoard[colIndex][rowIndex] === 0) {
-                PcBoard[colIndex][rowIndex] = 'o'
+            if (PcBoard[rowIndex][colIndex] === 0) {
+                PcBoard[rowIndex][colIndex] = 'o'
+                document.getElementById(`${squareID}`).classList.add("missShot");
                 console.log("miss")
-                console.log('row', colIndex)
-                console.log('col', rowIndex)
+                console.log('row', rowIndex)
+                console.log('col', colIndex)
                 console.log(PcBoard)
             }
-            else if (PcBoard[colIndex][rowIndex] === 'x' || 'o') {
+            else if (PcBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
+                PcBoard[rowIndex][colIndex] = 'x'
+                document.getElementById(`${squareID}`).classList.add("shipShotColor");
+                console.log("hit")
+                console.log('row', rowIndex)
+                console.log('col', colIndex)
+                console.log(PcBoard)
+            }
+            else if (PcBoard[rowIndex][colIndex] === 'x' || 'o') {
                 console.log("not allowed")
             }
             setTurn("PC's")
@@ -168,17 +174,26 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //PC: shoots random to player's board
     let recieveShootPlayer = (rowIndex, colIndex, e) => {
+        console.log("coord", playerBoard[rowIndex][colIndex])
         if (startGame === "on") {
-            if (playerBoard[colIndex][rowIndex] === 1) {
-                playerBoard[colIndex][rowIndex] = 'x'
-                console.log("hit")
-                console.log('col', colIndex, '/row', rowIndex)
-                console.log(playerBoard)
-            } else {
-                playerBoard[colIndex][rowIndex] = 'o'
+            if (playerBoard[rowIndex][colIndex] === 0) {
+                playerBoard[rowIndex][colIndex] = 'o'
+                document.getElementById(`${rowIndex},${colIndex}`).classList.add("missShot");
                 console.log("miss")
-                console.log('col', colIndex, '/row', rowIndex)
+                console.log('row', rowIndex)
+                console.log('col', colIndex)
                 console.log(playerBoard)
+            }
+            else if (playerBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
+                playerBoard[rowIndex][colIndex] = 'x'
+                document.getElementById(`${rowIndex},${colIndex}`).classList.add("shipShotColor");
+                console.log("hit")
+                console.log('row', rowIndex)
+                console.log('col', colIndex)
+                console.log(playerBoard)
+            }
+            else if (playerBoard[rowIndex][colIndex] === 'x' || 'o') {
+                console.log("not allowed")
             }
             setTurn("YOUR")
         }
@@ -195,11 +210,11 @@ const GamePage = ({ shipList, setShipList }) => {
                         onDrop={(e) => drop(e)}
                         onDragOver={(e) => dragOver(e)}
                     >
-                        {playerBoard.map((BOARD_ROWS, rowIndex) => (
-                            <div key={rowIndex} >
+                        {playerBoard.map((BOARD_ROWS, colIndex) => (
+                            <div key={colIndex} >
                                 {
-                                    BOARD_ROWS.map((BOARD_COLS, colIndex) => (
-                                        <div key={colIndex} className="square" id={[colIndex, rowIndex]}
+                                    BOARD_ROWS.map((BOARD_COLS, rowIndex) => (
+                                        <div key={rowIndex} className="square" id={[rowIndex, colIndex]}
                                             onClick={e => recieveShootPlayer(rowIndex, colIndex, e)}
 
                                         ></div>
@@ -212,11 +227,11 @@ const GamePage = ({ shipList, setShipList }) => {
                 <div>
                     <p>PC BOARD</p>
                     <div className="grid">
-                        {PcBoard.map((BOARD_ROWS, rowIndex) => (
-                            <div key={rowIndex} >
+                        {PcBoard.map((BOARD_ROWS, colIndex) => (
+                            <div key={colIndex} >
                                 {
-                                    BOARD_ROWS.map((BOARD_COLS, colIndex) => (
-                                        <div key={colIndex} className="square" id={[colIndex, rowIndex]}
+                                    BOARD_ROWS.map((BOARD_COLS, rowIndex) => (
+                                        <div key={rowIndex} className="square" id={pcId++}
                                             onClick={e => recieveShootPc(rowIndex, colIndex, e)}></div>
                                     ))}
                             </div>
