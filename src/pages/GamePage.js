@@ -3,13 +3,19 @@ import { useState, useEffect } from 'react';
 import './GamePage.css';
 import { ShipsDragNDrop } from '../components/ShipsDragNDrop'
 
-let ShipsLeft = [1, 2, 3, 4, 5];
+let PcShipsLeft = [1, 2, 3, 4, 5];
+let PlayerShipsLeft = [1, 2, 3, 4, 5];
+let pcShips = 5
+let playerShips = 5
+
 
 const GamePage = ({ shipList, setShipList }) => {
     const [playerBoard, setPlayerBoard] = useState([])
     const [PcBoard, setPcBoard] = useState([])
     const [startGame, setStartGame] = useState("off")
     const [turn, setTurn] = useState("")
+    const [pcInfo, setPcInfo] = useState("")
+    const [playerInfo, setPlayerInfo] = useState("")
 
     let BOARD_COLS = 10;
     let BOARD_ROWS = 10;
@@ -20,6 +26,7 @@ const GamePage = ({ shipList, setShipList }) => {
     let rotated = false
     let ShipData = []
     let validated = false
+
     //initialize just once
     useEffect(() => {
         setPlayerBoard(new Array(BOARD_COLS).fill(0).map(() => new Array(BOARD_ROWS).fill(0))); //setting 2d array 10x10
@@ -52,7 +59,6 @@ const GamePage = ({ shipList, setShipList }) => {
         validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, rotated) //on PC's board
 
         if (validated) {
-            console.log("player validated", validated)
             for (let i = 0; i < ShipSize; i++) {
                 if (ShipData.rotated) {
                     playerBoard[DropRowIdx + i][DropColIdx] = ShipSize
@@ -64,8 +70,6 @@ const GamePage = ({ shipList, setShipList }) => {
                 }
             }
             setShipList(newShipList)
-            console.log("PlayerBoard row& col", DropRowIdx, DropColIdx)
-            console.log("PlayerBoard", playerBoard)
             generateRandomDirection(ShipSize)
         }
         else { console.log("not valid") }
@@ -90,15 +94,12 @@ const GamePage = ({ shipList, setShipList }) => {
             PcRowIdx = COORD1
             PcColIdx = COORD2
         }
-        console.log("rowIDX&PcColIdx", PcRowIdx, PcColIdx, "/size", ShipSize)
         validated = validateShipPosition(PcRowIdx, PcColIdx, ShipSize, PcBoard) //on PC's board
-        console.log("pc validated", validated)
 
         if (validated) {
             placeShipsRandomly(ShipSize)
         }
         else {
-            console.log("not validated")
             generateRandomDirection(ShipSize)
         }
     };
@@ -132,7 +133,6 @@ const GamePage = ({ shipList, setShipList }) => {
             }
         }
         rotated = false
-        console.log("PcBoard", PcBoard)
         return
     };
 
@@ -141,6 +141,8 @@ const GamePage = ({ shipList, setShipList }) => {
         if (shipList.length === 0) {
             setStartGame("on")
             setTurn("YOUR")
+            setPcInfo(`${pcShips} ships left`)
+            setPlayerInfo(`${playerShips} ships left`)
         }
     };
 
@@ -196,41 +198,45 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     };
 
-    let countPlayerLeftShips = (ShotShipNum) => {
-        //     console.log("num", PcShipNum)
-        //     let ShotIdx = PcShipNum - 1
+    //Count PLayer ships left after each shot
+    let countPlayerLeftShips = (PlayerShipNum) => {
+        console.log("num", PlayerShipNum)
+        let ShotIdx = PlayerShipNum - 1
 
-        //     ShipsLeft[ShotIdx]--
-        //     console.log("ShipsLeft", ShipsLeft)
+        PlayerShipsLeft[ShotIdx]--
+        console.log("PlayerShipsLeft", PlayerShipsLeft)
 
-        //     if (ShipsLeft[ShotIdx] === 0) {
-        //         console.log("ShipSunk", PcShipNum)
-        //         ShipsLeft.splice(ShotIdx, 1)
-        //         console.log("ShipsLeft", ShipsLeft)
-        //     }
+        if (PlayerShipsLeft[ShotIdx] === 0) {
+            console.log("ShipSunk", PlayerShipNum)// change ship color to black
+            console.log("PlayerShipsLeft", PlayerShipsLeft)// in DOM
+            playerShips--
+            setPlayerInfo(`${playerShips} ships left`)
+        }
+        const reducer = (accumulator, curr) => accumulator + curr;
 
-        //     if (ShipsLeft.length === 0) {
-        //         console.log("YOU WON")
-        //     }
-        // }
-
+        if (PlayerShipsLeft.reduce(reducer) === 0) {
+            setTurn("YOU WON")
+        }
     }
-
+    //Count PC ships left after each shot
     let countPcLeftShips = (PcShipNum, e) => {
         console.log("num", PcShipNum)
         let ShotIdx = PcShipNum - 1
 
-        ShipsLeft[ShotIdx]--
-        console.log("ShipsLeft", ShipsLeft)
+        PcShipsLeft[ShotIdx]--
+        console.log("PcShipsLeft", PcShipsLeft)
 
-        if (ShipsLeft[ShotIdx] === 0) {
+        if (PcShipsLeft[ShotIdx] === 0) {
+            pcShips--
+            setPcInfo(`${pcShips} ships left`)
             console.log("ShipSunk", PcShipNum)// change ship color to black
-            console.log("ShipsLeft", ShipsLeft)// in DOM
+            console.log("PcShipsLeft", PcShipsLeft)// in DOM
+
         }
         const reducer = (accumulator, curr) => accumulator + curr;
 
-        if (ShipsLeft.reduce(reducer) === 0) {
-            console.log("YOU WON")//in DOM
+        if (PcShipsLeft.reduce(reducer) === 0) {
+            setTurn("YOU WON")
         }
     }
 
@@ -255,6 +261,7 @@ const GamePage = ({ shipList, setShipList }) => {
                             </div>
                         ))}
                     </div>
+                    <h4 className="info">{playerInfo}</h4>
                 </div>
                 <h4>{turn} TURN</h4>
                 <div>
@@ -270,11 +277,12 @@ const GamePage = ({ shipList, setShipList }) => {
                             </div>
                         ))}
                     </div>
+                    <h4 className="info">{pcInfo}</h4>
                 </div>
             </div>
             <button onClick={startGameBtn}>START</button>
             <ShipsDragNDrop shipList={shipList} />
-            <h4 className="info"></h4>
+
         </div>
     );
 }
