@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import './GamePage.css';
 import { ShipsDragNDrop } from '../components/ShipsDragNDrop'
 
+let ShipsLeft = [1, 2, 3, 4, 5];
+
 const GamePage = ({ shipList, setShipList }) => {
     const [playerBoard, setPlayerBoard] = useState([])
     const [PcBoard, setPcBoard] = useState([])
@@ -152,10 +154,11 @@ const GamePage = ({ shipList, setShipList }) => {
                 console.log("miss")
             }
             else if (PcBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
+                countPcLeftShips(PcBoard[rowIndex][colIndex], e)//reduce ship hit
                 PcBoard[rowIndex][colIndex] = 'x'
                 document.getElementById(`${squareID}`).classList.add("shipShotColor");
                 console.log("hit")
-                countPcLeftShips(PcBoard[rowIndex][colIndex])
+
             }
             else if (PcBoard[rowIndex][colIndex] === 'x' || 'o') {
                 console.log("not allowed")
@@ -179,10 +182,11 @@ const GamePage = ({ shipList, setShipList }) => {
                 console.log("miss")
             }
             else if (playerBoard[PcRowIdx][PcColIdx] === 1 || 2 || 3 || 4 || 5) {
+                countPlayerLeftShips(playerBoard[PcRowIdx][PcColIdx])
                 playerBoard[PcRowIdx][PcColIdx] = 'x'
                 document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("shipShotColor");
                 console.log("hit")
-                countPlayerLeftShips(playerBoard[PcRowIdx][PcColIdx])
+
             }
             else if (playerBoard[PcRowIdx][PcColIdx] === 'x' || 'o') {
                 console.log("not allowed")
@@ -192,23 +196,42 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     };
 
-    let countPlayerLeftShips = (PlayerShipNum) => {
-        let PlayerOneShip = 0
-        let PlayerTwoShip = 0
-        let PlayerThreeShip = 0
-        let PlayerFourShip = 0
-        let PlayerFiveShip = 0
+    let countPlayerLeftShips = (ShotShipNum) => {
+        //     console.log("num", PcShipNum)
+        //     let ShotIdx = PcShipNum - 1
 
+        //     ShipsLeft[ShotIdx]--
+        //     console.log("ShipsLeft", ShipsLeft)
 
+        //     if (ShipsLeft[ShotIdx] === 0) {
+        //         console.log("ShipSunk", PcShipNum)
+        //         ShipsLeft.splice(ShotIdx, 1)
+        //         console.log("ShipsLeft", ShipsLeft)
+        //     }
+
+        //     if (ShipsLeft.length === 0) {
+        //         console.log("YOU WON")
+        //     }
+        // }
 
     }
 
-    let countPcLeftShips = (PcShipNum) => {
-        let PcOneShip = 0
-        let PcTwoShip = 0
-        let PcThreeShip = 0
-        let PcFourShip = 0
-        let PcFiveShip = 0
+    let countPcLeftShips = (PcShipNum, e) => {
+        console.log("num", PcShipNum)
+        let ShotIdx = PcShipNum - 1
+
+        ShipsLeft[ShotIdx]--
+        console.log("ShipsLeft", ShipsLeft)
+
+        if (ShipsLeft[ShotIdx] === 0) {
+            console.log("ShipSunk", PcShipNum)// change ship color to black
+            console.log("ShipsLeft", ShipsLeft)// in DOM
+        }
+        const reducer = (accumulator, curr) => accumulator + curr;
+
+        if (ShipsLeft.reduce(reducer) === 0) {
+            console.log("YOU WON")//in DOM
+        }
     }
 
     return (

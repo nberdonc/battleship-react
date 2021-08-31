@@ -6,12 +6,12 @@ export const ShipsDragNDrop = ({ shipList }) => {
     const handleDragStart = (e) => {
         const data = JSON.stringify({
             size: e.target.value,
-            offsetY: Math.floor(
-                (e.clientY - e.target.getBoundingClientRect().top) / 50 // Calculate the position of the player's cursor on the ship
-            ),
-            offsetX: Math.floor(
-                (e.clientX - e.target.getBoundingClientRect().left) / 50
-            ),
+            // offsetY: Math.floor(
+            //     (e.clientY - e.target.getBoundingClientRect().top) / 50 // Calculate the position of the player's cursor on the ship
+            // ),
+            // offsetX: Math.floor(
+            //     (e.clientX - e.target.getBoundingClientRect().left) / 50
+            // ),
             rotated: rotated,
             name: e.target.name,
         });
