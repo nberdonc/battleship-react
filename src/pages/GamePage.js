@@ -236,7 +236,7 @@ const GamePage = ({ shipList, setShipList }) => {
         const reducer = (accumulator, curr) => accumulator + curr;
 
         if (PcShipsLeft.reduce(reducer) === 0) {
-            setTurn("YOU WON")
+            setTurn("YOU WON")//block all features of the game
         }
     }
 
