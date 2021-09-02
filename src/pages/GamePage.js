@@ -16,6 +16,7 @@ const GamePage = ({ shipList, setShipList }) => {
     const [turn, setTurn] = useState("")
     const [pcInfo, setPcInfo] = useState("")
     const [playerInfo, setPlayerInfo] = useState("")
+    const checkWinner = (accumulator, curr) => accumulator + curr;//to check if player is winner
 
     let BOARD_COLS = 10;
     let BOARD_ROWS = 10;
@@ -31,12 +32,15 @@ const GamePage = ({ shipList, setShipList }) => {
     useEffect(() => {
         setPlayerBoard(new Array(BOARD_COLS).fill(0).map(() => new Array(BOARD_ROWS).fill(0))); //setting 2d array 10x10
         setPcBoard(new Array(BOARD_COLS).fill(0).map(() => new Array(BOARD_ROWS).fill(0)));//setting 2d array 10x10
-        setTurn()
     }, [])
 
     useEffect(() => {
-        console.log(turn)
+        console.log("WHICH TURN IT IS???????", turn)
     }, [turn])
+
+    const refresh = () => {
+        window.location.reload();
+    };
 
     //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
     let dragOver = (e) => {
@@ -153,27 +157,32 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //Player: shoots to coordinates on PC's board
     let recieveShootPc = (rowIndex, colIndex, e) => {
+        console.log("pc board", PcBoard)
         let squareID = e.target.id
         if (startGame === "on") {
-            if (PcBoard[rowIndex][colIndex] === 0) {
+            if (typeof PcBoard[rowIndex][colIndex] !== 'number') {
+                console.log("not allowed")
+                return
+            }
+            else if (PcBoard[rowIndex][colIndex] === 0) {
                 PcBoard[rowIndex][colIndex] = 'o'
                 document.getElementById(`${squareID}`).classList.add("missShot");
-                console.log("miss")
             }
             else if (PcBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
                 countPcLeftShips(PcBoard[rowIndex][colIndex], e)//reduce ship hit
                 PcBoard[rowIndex][colIndex] = 'x'
                 document.getElementById(`${squareID}`).classList.add("shipShotColor");
-                console.log("hit")
+            }
 
+
+            if (!countPcLeftShips) {//TODO
+                console.log("SHips all sunk so you win and stop game")//TODO
+                return//TODO
             }
-            else if (PcBoard[rowIndex][colIndex] === 'x' || 'o') {
-                console.log("not allowed")
+            else {
+                setTurn("PC's")
+                setTimeout(function () { recieveShootPlayer() }, 1000)
             }
-            console.log(PcBoard)
-            setTurn("PC's")
-            console.log("PCboard", PcBoard)
-            setTimeout(function () { recieveShootPlayer() }, 1000)
         }
     };
 
@@ -181,25 +190,25 @@ const GamePage = ({ shipList, setShipList }) => {
         //to create random shoot
         PcRowIdx = Math.floor(Math.random() * BOARD_ROWS);
         PcColIdx = Math.floor(Math.random() * BOARD_ROWS);
-
+        console.log("random coord", PcRowIdx, PcColIdx)
+        console.log("num?", playerBoard[PcRowIdx][PcColIdx])
         if (startGame === "on") {
-            if (playerBoard[PcRowIdx][PcColIdx] === 0) {
+            if (typeof playerBoard[PcRowIdx][PcColIdx] !== 'number') {
+                recieveShootPlayer()//create other coordinates as square already shot
+            }
+            else if (playerBoard[PcRowIdx][PcColIdx] === 0) {
                 playerBoard[PcRowIdx][PcColIdx] = 'o'
                 document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("missShot");
-                console.log("miss")
+                setTurn("YOUR")
+                console.log("playerboard", playerBoard)
             }
             else if (playerBoard[PcRowIdx][PcColIdx] === 1 || 2 || 3 || 4 || 5) {
                 countPlayerLeftShips(playerBoard[PcRowIdx][PcColIdx])
                 playerBoard[PcRowIdx][PcColIdx] = 'x'
                 document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("shipShotColor");
-                console.log("hit")
-
+                setTurn("YOUR")
+                console.log("playerboard", playerBoard)
             }
-            else if (playerBoard[PcRowIdx][PcColIdx] === 'x' || 'o') {
-                console.log("not allowed")
-            }
-            console.log("playerboard", playerBoard)
-            setTurn("YOUR")
         }
     };
 
@@ -209,19 +218,17 @@ const GamePage = ({ shipList, setShipList }) => {
         let ShotIdx = PlayerShipNum - 1
 
         PlayerShipsLeft[ShotIdx]--
-        console.log("PlayerShipsLeft", PlayerShipsLeft)
-
+        console.log("PcShipsLeft", PlayerShipsLeft)
         if (PlayerShipsLeft[ShotIdx] === 0) {
             console.log("ShipSunk", PlayerShipNum)
             playerShips--
             setPlayerInfo(`${playerShips} ships left`)
         }
-        const reducer = (accumulator, curr) => accumulator + curr;
 
-        if (PlayerShipsLeft.reduce(reducer) === 0) {
+        if (PlayerShipsLeft.reduce(checkWinner) === 0) {
             console.log("PC WON")
-            setTurn("PC WON")
-            return
+            setPlayerInfo(`${playerShips} SHIPS LEFT, PC HAS DEFEAT YOU!!`)
+            return false
         }
     }
     //Count PC ships left after each shot
@@ -230,20 +237,20 @@ const GamePage = ({ shipList, setShipList }) => {
         let ShotIdx = PcShipNum - 1
 
         PcShipsLeft[ShotIdx]--
-        console.log("PcShipsLeft", PcShipsLeft)
+        //console.log("PcShipsLeft", PcShipsLeft)
 
         if (PcShipsLeft[ShotIdx] === 0) {
             pcShips--
             setPcInfo(`${pcShips} ships left`)
             console.log("ShipSunk", PcShipNum)
         }
-        const reducer = (accumulator, curr) => accumulator + curr;
 
-        if (PcShipsLeft.reduce(reducer) === 0) {
+        if (PcShipsLeft.reduce(checkWinner) === 0) {
             console.log("YOU WON")
-            setTurn("YOU WON")//block all features of the game
-            return
+            setPcInfo(`${pcShips} SHIPS LEFT, YOU WON!!`)//block all features of the game
+            return false//TODO
         }
+
     }
 
     return (
@@ -287,6 +294,7 @@ const GamePage = ({ shipList, setShipList }) => {
                 </div>
             </div>
             <button onClick={startGameBtn}>START</button>
+            <button onClick={refresh}>RESTART</button>
             <ShipsDragNDrop shipList={shipList} />
 
         </div>
