@@ -16,6 +16,7 @@ const GamePage = ({ shipList, setShipList }) => {
     const [turn, setTurn] = useState("")
     const [pcInfo, setPcInfo] = useState("")
     const [playerInfo, setPlayerInfo] = useState("")
+    const [disabled, setDisabled] = useState(false)
     const checkWinner = (accumulator, curr) => accumulator + curr;//to check if player is winner
 
     let BOARD_COLS = 10;
@@ -169,20 +170,14 @@ const GamePage = ({ shipList, setShipList }) => {
                 document.getElementById(`${squareID}`).classList.add("missShot");
             }
             else if (PcBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
-                countPcLeftShips(PcBoard[rowIndex][colIndex], e)//reduce ship hit
+                countPcLeftShips(PcBoard[rowIndex][colIndex], e)
                 PcBoard[rowIndex][colIndex] = 'x'
                 document.getElementById(`${squareID}`).classList.add("shipShotColor");
             }
 
-
-            if (!countPcLeftShips) {//TODO
-                console.log("SHips all sunk so you win and stop game")//TODO
-                return//TODO
-            }
-            else {
-                setTurn("PC's")
-                setTimeout(function () { recieveShootPlayer() }, 1000)
-            }
+            //TODO: disable these functions if game over & do the same on player board
+            setTurn("PC's")
+            setTimeout(function () { recieveShootPlayer() }, 1000)
         }
     };
 
@@ -228,7 +223,8 @@ const GamePage = ({ shipList, setShipList }) => {
         if (PlayerShipsLeft.reduce(checkWinner) === 0) {
             console.log("PC WON")
             setPlayerInfo(`${playerShips} SHIPS LEFT, PC HAS DEFEAT YOU!!`)
-            return false
+            setDisabled(true)
+            console.log("all disabled")
         }
     }
     //Count PC ships left after each shot
@@ -248,9 +244,9 @@ const GamePage = ({ shipList, setShipList }) => {
         if (PcShipsLeft.reduce(checkWinner) === 0) {
             console.log("YOU WON")
             setPcInfo(`${pcShips} SHIPS LEFT, YOU WON!!`)//block all features of the game
-            return false//TODO
+            setDisabled(true)
+            console.log("all disabled")
         }
-
     }
 
     return (
@@ -284,7 +280,7 @@ const GamePage = ({ shipList, setShipList }) => {
                             <div key={colIndex} >
                                 {
                                     BOARD_ROWS.map((BOARD_COLS, rowIndex) => (
-                                        <div key={rowIndex} className="square" id={pcId++}
+                                        <div key={rowIndex} disabled={disabled} className="square" id={pcId++}
                                             onClick={e => recieveShootPc(rowIndex, colIndex, e)}></div>
                                     ))}
                             </div>
