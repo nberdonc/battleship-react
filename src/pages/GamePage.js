@@ -7,7 +7,7 @@ let PcShipsLeft = [1, 2, 3, 4, 5];
 let PlayerShipsLeft = [1, 2, 3, 4, 5];
 let pcShips = 5
 let playerShips = 5
-
+let rotated = false
 
 const GamePage = ({ shipList, setShipList }) => {
     const [playerBoard, setPlayerBoard] = useState([])
@@ -23,7 +23,7 @@ const GamePage = ({ shipList, setShipList }) => {
     let PcRowIdx = 0
     let PcColIdx = 0
     let pcId = 0
-    let rotated = false
+
     let ShipData = []
     let validated = false
 
@@ -31,7 +31,12 @@ const GamePage = ({ shipList, setShipList }) => {
     useEffect(() => {
         setPlayerBoard(new Array(BOARD_COLS).fill(0).map(() => new Array(BOARD_ROWS).fill(0))); //setting 2d array 10x10
         setPcBoard(new Array(BOARD_COLS).fill(0).map(() => new Array(BOARD_ROWS).fill(0)));//setting 2d array 10x10
+        setTurn()
     }, [])
+
+    useEffect(() => {
+        console.log(turn)
+    }, [turn])
 
     //dragging & dropping (default action of dragover is to cancel the drop so we need to prevent)
     let dragOver = (e) => {
@@ -78,14 +83,13 @@ const GamePage = ({ shipList, setShipList }) => {
     //PC: Random direction for PC's ships 0 horizontal 1 vertical
     const generateRandomDirection = (ShipSize) => {
         rotated = Math.random() < 0.5
-        getRandomCoordinates(ShipSize)
+        getRandomCoordinates(ShipSize, rotated)
     }
 
     //PC: Random coordinates for PC's board
-    const getRandomCoordinates = (ShipSize) => {
+    const getRandomCoordinates = (ShipSize, rotated) => {
         let COORD1 = Math.floor(Math.random() * BOARD_ROWS);
         let COORD2 = Math.floor(Math.random() * (BOARD_ROWS - ShipSize - 1));
-
         if (rotated) {
             PcRowIdx = COORD2
             PcColIdx = COORD1
@@ -94,7 +98,7 @@ const GamePage = ({ shipList, setShipList }) => {
             PcRowIdx = COORD1
             PcColIdx = COORD2
         }
-        validated = validateShipPosition(PcRowIdx, PcColIdx, ShipSize, PcBoard) //on PC's board
+        validated = validateShipPosition(PcRowIdx, PcColIdx, ShipSize, PcBoard, rotated) //on PC's board
 
         if (validated) {
             placeShipsRandomly(ShipSize)
@@ -132,6 +136,7 @@ const GamePage = ({ shipList, setShipList }) => {
                 PcBoard[PcRowIdx][PcColIdx + i] = ShipSize
             }
         }
+        console.log("pc board", PcBoard)
         rotated = false
         return
     };
@@ -207,15 +212,16 @@ const GamePage = ({ shipList, setShipList }) => {
         console.log("PlayerShipsLeft", PlayerShipsLeft)
 
         if (PlayerShipsLeft[ShotIdx] === 0) {
-            console.log("ShipSunk", PlayerShipNum)// change ship color to black
-            console.log("PlayerShipsLeft", PlayerShipsLeft)// in DOM
+            console.log("ShipSunk", PlayerShipNum)
             playerShips--
             setPlayerInfo(`${playerShips} ships left`)
         }
         const reducer = (accumulator, curr) => accumulator + curr;
 
         if (PlayerShipsLeft.reduce(reducer) === 0) {
-            setTurn("YOU WON")
+            console.log("PC WON")
+            setTurn("PC WON")
+            return
         }
     }
     //Count PC ships left after each shot
@@ -229,14 +235,14 @@ const GamePage = ({ shipList, setShipList }) => {
         if (PcShipsLeft[ShotIdx] === 0) {
             pcShips--
             setPcInfo(`${pcShips} ships left`)
-            console.log("ShipSunk", PcShipNum)// change ship color to black
-            console.log("PcShipsLeft", PcShipsLeft)// in DOM
-
+            console.log("ShipSunk", PcShipNum)
         }
         const reducer = (accumulator, curr) => accumulator + curr;
 
         if (PcShipsLeft.reduce(reducer) === 0) {
+            console.log("YOU WON")
             setTurn("YOU WON")//block all features of the game
+            return
         }
     }
 
