@@ -8,6 +8,7 @@ let PlayerShipsLeft = [1, 2, 3, 4, 5];
 let pcShips = 5
 let playerShips = 5
 let rotated = false
+let checkWinner = (accumulator, curr) => accumulator + curr;//to check if player is winner
 
 const GamePage = ({ shipList, setShipList }) => {
     const [playerBoard, setPlayerBoard] = useState([])
@@ -17,7 +18,6 @@ const GamePage = ({ shipList, setShipList }) => {
     const [pcInfo, setPcInfo] = useState("")
     const [playerInfo, setPlayerInfo] = useState("")
     const [disabled, setDisabled] = useState(false)
-    const checkWinner = (accumulator, curr) => accumulator + curr;//to check if player is winner
 
     let BOARD_COLS = 10;
     let BOARD_ROWS = 10;
@@ -168,16 +168,18 @@ const GamePage = ({ shipList, setShipList }) => {
             else if (PcBoard[rowIndex][colIndex] === 0) {
                 PcBoard[rowIndex][colIndex] = 'o'
                 document.getElementById(`${squareID}`).classList.add("missShot");
+                setTurn("PC's")
+                setTimeout(function () { recieveShootPlayer() }, 1000)
             }
             else if (PcBoard[rowIndex][colIndex] === 1 || 2 || 3 || 4 || 5) {
                 countPcLeftShips(PcBoard[rowIndex][colIndex], e)
                 PcBoard[rowIndex][colIndex] = 'x'
                 document.getElementById(`${squareID}`).classList.add("shipShotColor");
+                if (PcShipsLeft.reduce(checkWinner) !== 0) {
+                    setTurn("PC's")
+                    setTimeout(function () { recieveShootPlayer() }, 1000)
+                }
             }
-
-            //TODO: disable these functions if game over & do the same on player board
-            setTurn("PC's")
-            setTimeout(function () { recieveShootPlayer() }, 1000)
         }
     };
 
@@ -219,12 +221,10 @@ const GamePage = ({ shipList, setShipList }) => {
             playerShips--
             setPlayerInfo(`${playerShips} ships left`)
         }
-
         if (PlayerShipsLeft.reduce(checkWinner) === 0) {
             console.log("PC WON")
             setPlayerInfo(`${playerShips} SHIPS LEFT, PC HAS DEFEAT YOU!!`)
             setDisabled(true)
-            console.log("all disabled")
         }
     }
     //Count PC ships left after each shot
@@ -245,7 +245,6 @@ const GamePage = ({ shipList, setShipList }) => {
             console.log("YOU WON")
             setPcInfo(`${pcShips} SHIPS LEFT, YOU WON!!`)//block all features of the game
             setDisabled(true)
-            console.log("all disabled")
         }
     }
 

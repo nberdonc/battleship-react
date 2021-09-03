@@ -18,6 +18,8 @@
 .square[disabled]{
     pointer-events: none;
 }
+/*The above code makes the contents of the div disabled, 
+You can make the div disabled by adding the disabled attribute.*/
 
 .square:hover{
     background-color: rgb(168, 161, 161);  
