@@ -1,4 +1,18 @@
 
+.rules-list{
+    width: fit-content;
+    padding: 1em;
+    text-align: left;
+    margin: auto;
+}
+
+.btn{
+    width: 100px;
+    margin: 1em 1em auto;
+    padding: 1em;
+    cursor: pointer;
+}
+
 .grid{
     width: 400px;
     height: 400px;

@@ -7,7 +7,9 @@ let PcShipsLeft = [1, 2, 3, 4, 5];
 let PlayerShipsLeft = [1, 2, 3, 4, 5];
 let pcShips = 5
 let playerShips = 5
-let rotated = false
+//keep data from PC previous shot to Player
+let pcPreviousRandomShot = []
+//
 let checkWinner = (accumulator, curr) => accumulator + curr;//to check if player is winner
 
 const GamePage = ({ shipList, setShipList }) => {
@@ -60,23 +62,29 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //Player: place coordinates on player board
     let placeShips = (DropCoord, ShipData, e) => {
-        const newShipList = shipList.filter(ship => ship.name !== ShipData.name)//delete ship droped from shipList
+        const newShipList = shipList.filter(ship => ship.name !== ShipData.name)//deletes ship droped from shipList
         let DropRowIdx = parseInt(DropCoord[0])
-        let DropColIdx = parseInt(DropCoord[2]) // todo arreglar id
+        let DropColIdx = parseInt(DropCoord[2])
         let ShipSize = parseInt(ShipData.size)
-        rotated = ShipData.rotated
+        let rotated = ShipData.rotated
+        let offsetY = parseInt(ShipData.offsetY)
+        let offsetX = parseInt(ShipData.offsetX)
 
-        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, rotated) //on PC's board
+
+        console.log("offsetY", parseInt(ShipData.offsetY))
+        console.log("offsetX", parseInt(ShipData.offsetX))
+
+        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, rotated, offsetX, offsetY) //on PC's board
 
         if (validated) {
             for (let i = 0; i < ShipSize; i++) {
                 if (ShipData.rotated) {
-                    playerBoard[DropRowIdx + i][DropColIdx] = ShipSize
-                    document.getElementById(`${DropRowIdx + i},${DropColIdx}`).classList.add("shipdropedColor");
+                    playerBoard[DropRowIdx - offsetY + i][DropColIdx] = ShipSize
+                    document.getElementById(`${DropRowIdx - offsetY + i},${DropColIdx}`).classList.add("shipdropedColor");
                 }
                 else if (!ShipData.rotated) {
-                    playerBoard[DropRowIdx][DropColIdx + i] = ShipSize
-                    document.getElementById(`${DropRowIdx},${DropColIdx + i}`).classList.add("shipdropedColor");
+                    playerBoard[DropRowIdx][DropColIdx - offsetX + i] = ShipSize
+                    document.getElementById(`${DropRowIdx},${DropColIdx - offsetX + i}`).classList.add("shipdropedColor");
                 }
             }
             setShipList(newShipList)
@@ -87,15 +95,15 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //PC: Random direction for PC's ships 0 horizontal 1 vertical
     const generateRandomDirection = (ShipSize) => {
-        rotated = Math.random() < 0.5
-        getRandomCoordinates(ShipSize, rotated)
+        let PcRotated = Math.random() < 0.5
+        getRandomCoordinates(ShipSize, PcRotated)
     }
 
     //PC: Random coordinates for PC's board
-    const getRandomCoordinates = (ShipSize, rotated) => {
+    const getRandomCoordinates = (ShipSize, PcRotated) => {
         let COORD1 = Math.floor(Math.random() * BOARD_ROWS);
         let COORD2 = Math.floor(Math.random() * (BOARD_ROWS - ShipSize - 1));
-        if (rotated) {
+        if (PcRotated) {
             PcRowIdx = COORD2
             PcColIdx = COORD1
         }
@@ -103,17 +111,17 @@ const GamePage = ({ shipList, setShipList }) => {
             PcRowIdx = COORD1
             PcColIdx = COORD2
         }
-        validated = validateShipPosition(PcRowIdx, PcColIdx, ShipSize, PcBoard, rotated) //on PC's board
+        validated = validateShipPosition(PcRowIdx, PcColIdx, ShipSize, PcBoard, PcRotated) //on PC's board
 
         if (validated) {
-            placeShipsRandomly(ShipSize)
+            placeShipsRandomly(ShipSize, PcRotated)
         }
         else {
             generateRandomDirection(ShipSize)
         }
     };
 
-    const validateShipPosition = (row, col, ShipSize, board, rotated) => {
+    const validateShipPosition = (row, col, ShipSize, board, rotated, offsetX, offsetY) => {
         if (!rotated) {
             for (let i = col; i < col + ShipSize; i++) {
                 if (board[row][i] !== 0 || col > BOARD_ROWS - ShipSize) {
@@ -132,7 +140,7 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     }
 
-    const placeShipsRandomly = (ShipSize) => {
+    const placeShipsRandomly = (ShipSize, rotated) => {
         for (let i = 0; i < ShipSize; i++) {
             if (rotated) {
                 PcBoard[PcRowIdx + i][PcColIdx] = ShipSize
@@ -142,7 +150,6 @@ const GamePage = ({ shipList, setShipList }) => {
             }
         }
         console.log("pc board", PcBoard)
-        rotated = false
         return
     };
 
@@ -185,25 +192,27 @@ const GamePage = ({ shipList, setShipList }) => {
 
     let recieveShootPlayer = () => {
         //to create random shoot
-        PcRowIdx = Math.floor(Math.random() * BOARD_ROWS);
-        PcColIdx = Math.floor(Math.random() * BOARD_ROWS);
-        console.log("random coord", PcRowIdx, PcColIdx)
-        console.log("num?", playerBoard[PcRowIdx][PcColIdx])
+        let PlayerShotRowIdx = Math.floor(Math.random() * BOARD_ROWS);
+        let PlayerShotColIdx = Math.floor(Math.random() * BOARD_ROWS);
+
+        console.log("random coord", PlayerShotRowIdx, PlayerShotColIdx)
+        console.log("num?", playerBoard[PlayerShotRowIdx][PlayerShotColIdx])
         if (startGame === "on") {
-            if (typeof playerBoard[PcRowIdx][PcColIdx] !== 'number') {
+            if (typeof playerBoard[PlayerShotRowIdx][PlayerShotColIdx] !== 'number') {
                 recieveShootPlayer()//create other coordinates as square already shot
             }
-            else if (playerBoard[PcRowIdx][PcColIdx] === 0) {
-                playerBoard[PcRowIdx][PcColIdx] = 'o'
-                document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("missShot");
+            else if (playerBoard[PlayerShotRowIdx][PlayerShotColIdx] === 0) {
+                playerBoard[PlayerShotRowIdx][PlayerShotColIdx] = 'o'
+                document.getElementById(`${PlayerShotRowIdx},${PlayerShotColIdx}`).classList.add("missShot");
                 setTurn("YOUR")
                 console.log("playerboard", playerBoard)
             }
-            else if (playerBoard[PcRowIdx][PcColIdx] === 1 || 2 || 3 || 4 || 5) {
-                countPlayerLeftShips(playerBoard[PcRowIdx][PcColIdx])
-                playerBoard[PcRowIdx][PcColIdx] = 'x'
-                document.getElementById(`${PcRowIdx},${PcColIdx}`).classList.add("shipShotColor");
+            else if (playerBoard[PlayerShotRowIdx][PlayerShotColIdx] === 1 || 2 || 3 || 4 || 5) {
+                countPlayerLeftShips(playerBoard[PlayerShotRowIdx][PlayerShotColIdx])
+                playerBoard[PlayerShotRowIdx][PlayerShotColIdx] = 'x'
+                document.getElementById(`${PlayerShotRowIdx},${PlayerShotColIdx}`).classList.add("shipShotColor");
                 setTurn("YOUR")
+                pcPreviousRandomShot = playerBoard[PlayerShotRowIdx][PlayerShotColIdx]
                 console.log("playerboard", playerBoard)
             }
         }
@@ -250,8 +259,8 @@ const GamePage = ({ shipList, setShipList }) => {
 
     return (
         <div className="">
-            <h2>Hello</h2>
-            <h3>Give me your coordinates</h3>
+            <h2>BATTLESHIP</h2>
+            <h3>Drag your ships to the Player's board and press START!</h3>
             <div className="all-boards">
                 <div>
                     <p>PLAYER BOARD</p>
@@ -288,8 +297,8 @@ const GamePage = ({ shipList, setShipList }) => {
                     <h4 className="info">{pcInfo}</h4>
                 </div>
             </div>
-            <button onClick={startGameBtn}>START</button>
-            <button onClick={refresh}>RESTART</button>
+            <button className="btn" onClick={startGameBtn}>START</button>
+            <button className="btn" onClick={refresh}>RESTART</button>
             <ShipsDragNDrop shipList={shipList} />
 
         </div>

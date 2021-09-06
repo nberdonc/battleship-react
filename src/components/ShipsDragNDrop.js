@@ -6,12 +6,12 @@ export const ShipsDragNDrop = ({ shipList }) => {
     const handleDragStart = (e) => {
         const data = JSON.stringify({
             size: e.target.value,
-            // offsetY: Math.floor(
-            //     (e.clientY - e.target.getBoundingClientRect().top) / 50 // Calculate the position of the player's cursor on the ship
-            // ),
-            // offsetX: Math.floor(
-            //     (e.clientX - e.target.getBoundingClientRect().left) / 50
-            // ),
+            offsetY: Math.floor(
+                (e.clientY - e.target.getBoundingClientRect().top) / 50 // Calculate the position of the player's cursor on the ship
+            ),
+            offsetX: Math.floor(
+                (e.clientX - e.target.getBoundingClientRect().left) / 50
+            ),
             rotated: rotated,
             name: e.target.name,
         });
@@ -20,9 +20,11 @@ export const ShipsDragNDrop = ({ shipList }) => {
 
     const handleClick = (e) => {
         if (!rotated) {
-            document.querySelector(`.${e.target.className}`).style.transform = "rotate(90deg)";
+            e.target.parentNode.style.transform = "rotate(90deg)";
+            //document.querySelector(`.${e.target.className}`).style.transform = "rotate(90deg)";
         } else {
-            document.querySelector(`.${e.target.className}`).style.transform = "";
+            e.target.parentNode.style.transform = "";
+            //document.querySelector(`.${e.target.className}`).style.transform = "";
         }
         rotated = !rotated;
     };
