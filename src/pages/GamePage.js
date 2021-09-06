@@ -123,16 +123,16 @@ const GamePage = ({ shipList, setShipList }) => {
 
     const validateShipPosition = (row, col, ShipSize, board, rotated, offsetX, offsetY) => {
         if (!rotated) {
-            for (let i = col; i < col + ShipSize; i++) {
-                if (board[row][i] !== 0 || col > BOARD_ROWS - ShipSize) {
+            for (let i = col - offsetX; i < col - offsetX + ShipSize; i++) {
+                if (board[row][i] !== 0 || i - offsetX > BOARD_ROWS - ShipSize) {
                     return false
                 }
             }
             return true
         }
         else {
-            for (let i = row; i < row + ShipSize; i++) {
-                if (board[i][col] !== 0 || row > BOARD_ROWS - ShipSize) {
+            for (let i = row - offsetY; i < row - offsetY + ShipSize; i++) {
+                if (board[i][col] !== 0 || i - offsetY > BOARD_ROWS - ShipSize) {
                     return false
                 }
             }

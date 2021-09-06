@@ -1,16 +1,16 @@
 import React from 'react';
 
 export const ShipsDragNDrop = ({ shipList }) => {
-
+    let offSetPartition = 40 //each ship partition size is 40px
     let rotated = false;
     const handleDragStart = (e) => {
         const data = JSON.stringify({
             size: e.target.value,
             offsetY: Math.floor(
-                (e.clientY - e.target.getBoundingClientRect().top) / 50 // Calculate the position of the player's cursor on the ship
+                (e.clientY - e.target.getBoundingClientRect().top) / offSetPartition // Calculate the position of the player's cursor on the ship
             ),
             offsetX: Math.floor(
-                (e.clientX - e.target.getBoundingClientRect().left) / 50
+                (e.clientX - e.target.getBoundingClientRect().left) / offSetPartition
             ),
             rotated: rotated,
             name: e.target.name,
