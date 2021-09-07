@@ -12,11 +12,11 @@ function App() {
 
   //SHIP LIST
   const [shipList, setShipList] = useState([
-    { name: "cruiser-container", length: "1" },
-    { name: "destroyer-container", length: "2" },
-    { name: "submarine-container", length: "3" },
-    { name: "battleship-container", length: "4" },
-    { name: "carrier-container", length: "5" }
+    { name: "cruiser-container", length: "1", id: "cruiser-container" },
+    { name: "destroyer-container", length: "2", id: "destroyer-container" },
+    { name: "submarine-container", length: "3", id: "submarine-container" },
+    { name: "battleship-container", length: "4", id: "battleship-container" },
+    { name: "carrier-container", length: "5", id: "carrier-container" }
   ])
 
   const startPlaying = () => {

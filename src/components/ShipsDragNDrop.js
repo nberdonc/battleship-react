@@ -1,12 +1,11 @@
 import React from 'react';
+import { useState } from 'react';
 
 export const ShipsDragNDrop = ({ shipList }) => {
+    const [toggleRotation, setToggleRotation] = useState("-vertical")
     let offSetPartition = 40 //each ship partition size is 40px
     let rotated = false;
     const handleDragStart = (e) => {
-        console.log("ASDASD", document.querySelector(`.${e.target.className}`))
-        e.dataTransfer.setDragImage(document.querySelector(`.${e.target.className}`), 20, 20)
-
         const data = JSON.stringify({
             size: e.target.value,
             offsetY: Math.floor(
@@ -18,19 +17,19 @@ export const ShipsDragNDrop = ({ shipList }) => {
             rotated: rotated,
             name: e.target.name,
         });
-
         e.dataTransfer.setData("ship", data);
     }
 
     const handleClick = (e) => {
-        if (!rotated) {
-            // e.target.parentNode.style["background-color"] = "red";
-            document.querySelector(`.${e.target.className}`).style.transform = "rotate(90deg)";
-        } else {
-            //e.target.parentNode.style.transform = "";
-            document.querySelector(`.${e.target.className}`).style.transform = "";
-        }
+        console.log("id", e.target.id)
+
         rotated = !rotated;
+        console.log("rotated", rotated)
+        if (rotated) {
+            document.getElementById(`${e.target.id}`).classList.replace(`${e.target.name}`, `${e.target.name}-vertical`)
+        } else {
+            document.getElementById(`${e.target.id}`).classList.replace(`${e.target.name}-vertical`, `${e.target.name}`)
+        }
     };
 
 
@@ -38,20 +37,18 @@ export const ShipsDragNDrop = ({ shipList }) => {
     return (
         <div className="ships-container">
             {shipList.map((ele, eleIdx) => (
-                /*<div draggable="true">*/
                 <button
                     key={eleIdx}
                     onDragStart={handleDragStart}
+                    draggable="true"
                     className={ele.name}
                     name={ele.name}
                     value={ele.length}
+                    id={ele.id}
                     onClick={(e) => handleClick(e)} />
-                /* </div>*/
             ))}
         </div>
     )
 }
-/* crear classe nova, fent els barcos amples i llargs
-per ferlo vertical i afegir classname al button//
-o fer toggle per canviar de classname onlclick*/
+
 
