@@ -23,8 +23,6 @@ function App() {
     setAppstate('play');
   }
 
-
-
   return (
     <div className="App">
       {appState === 'play' ? <GamePage shipList={shipList} setShipList={setShipList} /> : <WelcomePage startPlaying={startPlaying} />}

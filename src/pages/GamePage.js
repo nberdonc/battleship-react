@@ -61,7 +61,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //Player: place coordinates on player board
     let placeShips = (DropCoord, ShipData, e) => {
-        const newShipList = shipList.filter(ship => ship.name !== ShipData.name)//deletes ship droped from shipList
+        const newShipList = shipList.filter(ship => ship.name !== ShipData.name)//deletes ship dropped from shipList
         let DropRowIdx = parseInt(DropCoord[0])
         let DropColIdx = parseInt(DropCoord[2])
         let ShipSize = parseInt(ShipData.size)
@@ -118,6 +118,7 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     };
 
+    // validate all ships positions in both boards
     const validateShipPosition = (row, col, ShipSize, board, rotated, offsetX, offsetY) => {
         if (!rotated) {
             for (let i = col - offsetX; i < col - offsetX + ShipSize; i++) {
@@ -137,6 +138,7 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     }
 
+    //PC: places ships randomly on Pc's board
     const placeShipsRandomly = (ShipSize, rotated) => {
         for (let i = 0; i < ShipSize; i++) {
             if (rotated) {
@@ -186,6 +188,7 @@ const GamePage = ({ shipList, setShipList }) => {
         }
     };
 
+    //PC: shoots to coordinates on Player's board
     let recieveShootPlayer = () => {
         //to create random shoot
         let PlayerShotRowIdx = Math.floor(Math.random() * BOARD_ROWS);
@@ -237,7 +240,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
         if (PcShipsLeft.reduce(checkWinner) === 0) {
             setPcInfo(`${pcShips} LEFT TO SINK, YOU WON!!`)
-            setDisabled(true)//blocks all features at gaveover<s
+            setDisabled(true)//blocks all features at gaveover
         }
     }
 
