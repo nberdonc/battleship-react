@@ -240,7 +240,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
         if (PcShipsLeft.reduce(checkWinner) === 0) {
             setPcInfo(`${pcShips} LEFT TO SINK, YOU WON!!`)
-            setDisabled(true)//blocks all features at gaveover
+            setDisabled(true)//blocks all features at gameover
         }
     }
 
