@@ -7,10 +7,8 @@ let PcShipsLeft = [1, 2, 3, 4, 5];
 let PlayerShipsLeft = [1, 2, 3, 4, 5];
 let pcShips = 5
 let playerShips = 5
-//keep data from PC previous shot to Player
-let pcPreviousRandomShot = []
-//
-let checkWinner = (accumulator, curr) => accumulator + curr;//to check if player is winner
+
+let checkWinner = (accumulator, curr) => accumulator + curr;//to check winner summing all ships left
 
 const GamePage = ({ shipList, setShipList }) => {
     const [playerBoard, setPlayerBoard] = useState([])
@@ -26,7 +24,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
     let PcRowIdx = 0
     let PcColIdx = 0
-    let pcId = 0
+    let pcId = 0 // to create square grid Id from 1 to 99
 
     let ShipData = []
     let validated = false
@@ -38,9 +36,10 @@ const GamePage = ({ shipList, setShipList }) => {
     }, [])
 
     useEffect(() => {
-        console.log("WHICH TURN IT IS???????", turn)
+        console.log("WHICH TURN IT IS?", turn)
     }, [turn])
 
+    // to reaload the page when RESTART button is pressed
     const refresh = () => {
         window.location.reload();
     };
@@ -70,11 +69,7 @@ const GamePage = ({ shipList, setShipList }) => {
         let offsetY = parseInt(ShipData.offsetY)
         let offsetX = parseInt(ShipData.offsetX)
 
-
-        console.log("offsetY", parseInt(ShipData.offsetY))
-        console.log("offsetX", parseInt(ShipData.offsetX))
-
-        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, rotated, offsetX, offsetY) //on PC's board
+        validated = validateShipPosition(DropRowIdx, DropColIdx, ShipSize, playerBoard, rotated, offsetX, offsetY)
 
         if (validated) {
             for (let i = 0; i < ShipSize; i++) {
@@ -101,9 +96,10 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //PC: Random coordinates for PC's board
     const getRandomCoordinates = (ShipSize, PcRotated) => {
-        console.log("playerBoard", playerBoard)
         let COORD1 = Math.floor(Math.random() * BOARD_ROWS);
         let COORD2 = Math.floor(Math.random() * (BOARD_ROWS - ShipSize - 1));
+        let offsetX = 0 //initializing offsets for PC's board as 0
+        let offsetY = 0
         if (PcRotated) {
             PcRowIdx = COORD2
             PcColIdx = COORD1
@@ -112,7 +108,7 @@ const GamePage = ({ shipList, setShipList }) => {
             PcRowIdx = COORD1
             PcColIdx = COORD2
         }
-        validated = validateShipPosition(PcRowIdx, PcColIdx, ShipSize, PcBoard, PcRotated) //on PC's board
+        validated = validateShipPosition(PcRowIdx, PcColIdx, ShipSize, PcBoard, PcRotated, offsetX, offsetY)
 
         if (validated) {
             placeShipsRandomly(ShipSize, PcRotated)
@@ -123,7 +119,6 @@ const GamePage = ({ shipList, setShipList }) => {
     };
 
     const validateShipPosition = (row, col, ShipSize, board, rotated, offsetX, offsetY) => {
-        //debugger
         if (!rotated) {
             for (let i = col - offsetX; i < col - offsetX + ShipSize; i++) {
                 if (i >= BOARD_ROWS || i < 0 || board[row][i] !== 0) {
@@ -160,14 +155,13 @@ const GamePage = ({ shipList, setShipList }) => {
         if (shipList.length === 0) {
             setStartGame("on")
             setTurn("YOUR")
-            setPcInfo(`${pcShips} ships left`)
-            setPlayerInfo(`${playerShips} ships left`)
+            setPcInfo(`${pcShips} LEFT TO SINK`)
+            setPlayerInfo(`${playerShips} LEFT TO SINK`)
         }
     };
 
     //Player: shoots to coordinates on PC's board
     let recieveShootPc = (rowIndex, colIndex, e) => {
-        console.log("pc board", PcBoard)
         let squareID = e.target.id
         if (startGame === "on") {
             if (typeof PcBoard[rowIndex][colIndex] !== 'number') {
@@ -197,65 +191,53 @@ const GamePage = ({ shipList, setShipList }) => {
         let PlayerShotRowIdx = Math.floor(Math.random() * BOARD_ROWS);
         let PlayerShotColIdx = Math.floor(Math.random() * BOARD_ROWS);
 
-        console.log("random coord", PlayerShotRowIdx, PlayerShotColIdx)
-        console.log("num?", playerBoard[PlayerShotRowIdx][PlayerShotColIdx])
         if (startGame === "on") {
             if (typeof playerBoard[PlayerShotRowIdx][PlayerShotColIdx] !== 'number') {
-                recieveShootPlayer()//create other coordinates as square already shot
+                recieveShootPlayer()//create other coordinates as square is already shot
             }
             else if (playerBoard[PlayerShotRowIdx][PlayerShotColIdx] === 0) {
                 playerBoard[PlayerShotRowIdx][PlayerShotColIdx] = 'o'
                 document.getElementById(`${PlayerShotRowIdx},${PlayerShotColIdx}`).classList.add("missShot");
                 setTurn("YOUR")
-                console.log("playerboard", playerBoard)
             }
             else if (playerBoard[PlayerShotRowIdx][PlayerShotColIdx] === 1 || 2 || 3 || 4 || 5) {
                 countPlayerLeftShips(playerBoard[PlayerShotRowIdx][PlayerShotColIdx])
                 playerBoard[PlayerShotRowIdx][PlayerShotColIdx] = 'x'
                 document.getElementById(`${PlayerShotRowIdx},${PlayerShotColIdx}`).classList.add("shipShotColor");
                 setTurn("YOUR")
-                pcPreviousRandomShot = playerBoard[PlayerShotRowIdx][PlayerShotColIdx]
-                console.log("playerboard", playerBoard)
             }
         }
     };
 
     //Count PLayer ships left after each shot
     let countPlayerLeftShips = (PlayerShipNum) => {
-        console.log("num", PlayerShipNum)
         let ShotIdx = PlayerShipNum - 1
-
         PlayerShipsLeft[ShotIdx]--
-        console.log("PcShipsLeft", PlayerShipsLeft)
+
         if (PlayerShipsLeft[ShotIdx] === 0) {
             console.log("ShipSunk", PlayerShipNum)
             playerShips--
-            setPlayerInfo(`${playerShips} ships left`)
+            setPlayerInfo(`${playerShips} TO SINK`)
         }
         if (PlayerShipsLeft.reduce(checkWinner) === 0) {
             console.log("PC WON")
-            setPlayerInfo(`${playerShips} SHIPS LEFT, PC HAS DEFEAT YOU!!`)
+            setPlayerInfo(`${playerShips} LEFT TO SINK, PC HAS DEFEATED YOU!!`)
             setDisabled(true)
         }
     }
     //Count PC ships left after each shot
     let countPcLeftShips = (PcShipNum, e) => {
-        console.log("num", PcShipNum)
         let ShotIdx = PcShipNum - 1
-
         PcShipsLeft[ShotIdx]--
-        //console.log("PcShipsLeft", PcShipsLeft)
 
         if (PcShipsLeft[ShotIdx] === 0) {
             pcShips--
-            setPcInfo(`${pcShips} ships left`)
-            console.log("ShipSunk", PcShipNum)
+            setPcInfo(`${pcShips} TO SINK`)
         }
 
         if (PcShipsLeft.reduce(checkWinner) === 0) {
-            console.log("YOU WON")
-            setPcInfo(`${pcShips} SHIPS LEFT, YOU WON!!`)//block all features of the game
-            setDisabled(true)
+            setPcInfo(`${pcShips} LEFT TO SINK, YOU WON!!`)
+            setDisabled(true)//blocks all features at gaveover<s
         }
     }
 
