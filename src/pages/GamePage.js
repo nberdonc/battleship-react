@@ -101,6 +101,7 @@ const GamePage = ({ shipList, setShipList }) => {
 
     //PC: Random coordinates for PC's board
     const getRandomCoordinates = (ShipSize, PcRotated) => {
+        console.log("playerBoard", playerBoard)
         let COORD1 = Math.floor(Math.random() * BOARD_ROWS);
         let COORD2 = Math.floor(Math.random() * (BOARD_ROWS - ShipSize - 1));
         if (PcRotated) {
@@ -122,9 +123,10 @@ const GamePage = ({ shipList, setShipList }) => {
     };
 
     const validateShipPosition = (row, col, ShipSize, board, rotated, offsetX, offsetY) => {
+        //debugger
         if (!rotated) {
             for (let i = col - offsetX; i < col - offsetX + ShipSize; i++) {
-                if (board[row][i] !== 0 || i - offsetX > BOARD_ROWS - ShipSize) {
+                if (i >= BOARD_ROWS || i < 0 || board[row][i] !== 0) {
                     return false
                 }
             }
@@ -132,7 +134,7 @@ const GamePage = ({ shipList, setShipList }) => {
         }
         else {
             for (let i = row - offsetY; i < row - offsetY + ShipSize; i++) {
-                if (board[i][col] !== 0 || i - offsetY > BOARD_ROWS - ShipSize) {
+                if (i >= BOARD_ROWS || i < 0 || board[i][col] !== 0) {
                     return false
                 }
             }
