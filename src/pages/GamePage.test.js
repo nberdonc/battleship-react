@@ -3,7 +3,7 @@ const { describe, test, expect } = require('@jest/globals');
 const GamePage = require("./GamePage")
 
 test("generate random direction", () => {
-    GamePage.generateRandomDirection();
+    GamePage.PcRotated();
     expect.toBe(1 || 0);
 });
 
