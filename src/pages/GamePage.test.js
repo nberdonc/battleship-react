@@ -1,8 +1,12 @@
-const { describe, test, expect } = require('@jest/globals');
-
 const GamePage = require("./GamePage")
 
-test("generate random direction", () => {
+test("board cols number", () => {
+    GamePage.BOARD_COLS();
+    expect.toBe(10);
+});
+
+
+test.skip("generate random direction", () => {
     GamePage.PcRotated();
     expect.toBe(1 || 0);
 });
