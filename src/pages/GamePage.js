@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import './GamePage.css';
+//import './GamePage.css';
 import { ShipsDragNDrop } from '../components/ShipsDragNDrop'
 
 let PcShipsLeft = [1, 2, 3, 4, 5];
