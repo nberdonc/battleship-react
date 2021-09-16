@@ -6,27 +6,27 @@ test("works", () => {
 
 
 test.skip("generate random direction", () => {
-    GamePage.PcRotated();
+    GamePage.generateRandomDirection();
     expect.toBe(1 || 0);
 });
 
 test.skip("ships get hit", () => {
-    GamePage.addShip(["A1", "A2", "A3"]);
-    GamePage.recieveHit("A1");
-    expect(board.ships[0].coords).toEqual(["x", "A2", "A3"]);
+    GamePage.addShip(["1", "2", "3"]);
+    GamePage.recieveHit("1");
+    expect(board.ships[0].coords).toEqual(["x", "2", "3"]);
 });
 
 test.skip("misses ships", () => {
-    GamePage.addShip(["A1", "A2", "A3"]);
+    GamePage.addShip(["1", "2", "3"]);
 
-    expect(board.recieveHit("B1")).toBe(false);
+    expect(board.recieveHit("1")).toBe(false);
 });
 
 test.skip("sinks ships", () => {
-    GamePage.addShip(["A1", "A2", "A3"]);
-    GamePage.recieveHit("A1");
-    GamePage.recieveHit("A2");
-    GamePage.recieveHit("A3");
+    GamePage.addShip(["1", "2", "3"]);
+    GamePage.recieveHit("1");
+    GamePage.recieveHit("2");
+    GamePage.recieveHit("3");
 
     expect(board.ships[0].isSunk()).toBe(true);
 });
