@@ -25,8 +25,6 @@ test.skip("misses ships", () => {
 test.skip("sinks ships", () => {
     GamePage.addShip(["1", "2", "3"]);
     GamePage.recieveHit("1");
-    GamePage.recieveHit("2");
-    GamePage.recieveHit("3");
 
     expect(board.ships[0].isSunk()).toBe(true);
 });
