@@ -253,7 +253,9 @@ const GamePage = ({ shipList, setShipList }) => {
                     <p>PLAYER BOARD</p>
                     <div className="grid"
                         onDrop={(e) => drop(e)}
+                        onTouchEnd={(e) => drop(e)}
                         onDragOver={(e) => dragOver(e)}
+                        onTouchMove={(e) => dragOver(e)}
                     >
                         {playerBoard.map((BOARD_ROWS, colIndex) => (
                             <div key={colIndex} >
