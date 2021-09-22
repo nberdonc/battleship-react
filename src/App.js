@@ -26,6 +26,7 @@ function App() {
   return (
     <div className="App">
       {appState === 'play' ? <GamePage shipList={shipList} setShipList={setShipList} /> : <WelcomePage startPlaying={startPlaying} />}
+      <p>Made by Nuria Berdonces</p>
     </div>
   );
 }
