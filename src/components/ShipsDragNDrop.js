@@ -40,7 +40,7 @@ export const ShipsDragNDrop = ({ shipList }) => {
                 <button
                     key={eleIdx}
                     onDragStart={handleDragStart}
-                    onTouchStart={handleDragStart}
+                    touchstart={handleDragStart}
                     draggable="true"
                     className={ele.name}
                     name={ele.name}

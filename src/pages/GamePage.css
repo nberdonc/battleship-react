@@ -14,8 +14,6 @@
 }
 
 .grid{
-    width: 400px;
-    height: 400px;
     display: flex;
     flex-wrap: wrap;
     background-color: ridge;
@@ -177,6 +175,7 @@ You can make the div disabled by adding the disabled attribute.*/
         height: 250px;
         margin: auto;
         padding-top: 1em;
+        padding-bottom: 1em;
         background-color: inherit;
     }
   }
