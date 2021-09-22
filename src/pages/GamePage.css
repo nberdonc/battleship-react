@@ -165,4 +165,19 @@ You can make the div disabled by adding the disabled attribute.*/
 }
 
 
-
+@media(max-width: 930px){
+    .all-boards{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content:space-around;
+    }
+    .ships-container{
+        width: 400px;
+        height: 250px;
+        margin: auto;
+        padding-top: 1em;
+        background-color: inherit;
+    }
+  }
+  
